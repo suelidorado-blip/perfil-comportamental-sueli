@@ -1,0 +1,23 @@
+USE ESTA PASTA DIRETAMENTE NO VERCEL.
+
+Na raiz dela devem aparecer imediatamente:
+- app/
+- lib/
+- supabase/
+- package.json
+- next.config.mjs
+- tsconfig.json
+
+Ao selecionar no Vercel, escolha a pasta "perfil_app_vercel_final" inteira.
+Nao selecione uma pasta acima dela.
+
+Variaveis de ambiente necessarias:
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+NEXT_PUBLIC_APP_URL
+
+IMPORTANTE:
+- NEXT_PUBLIC_SUPABASE_ANON_KEY recebe a Publishable key do Supabase.
+- SUPABASE_SERVICE_ROLE_KEY recebe a Secret key do Supabase.
+- Nunca exponha a Secret key em paginas publicas ou mensagens.

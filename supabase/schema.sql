@@ -3,6 +3,7 @@ create extension if not exists pgcrypto;
 create table if not exists public.assessments (
   id uuid primary key default gen_random_uuid(),
   participant_name text not null,
+  respondent_name text,
   participant_contact text,
   context text,
   type text not null check (type in ('behavioral','vocational')),
@@ -22,6 +23,7 @@ create table if not exists public.assessments (
 );
 
 -- Safe upgrades if the table already existed before this version.
+alter table public.assessments add column if not exists respondent_name text;
 alter table public.assessments add column if not exists started_at timestamptz;
 alter table public.assessments add column if not exists expires_at timestamptz;
 alter table public.assessments add column if not exists used_at timestamptz;

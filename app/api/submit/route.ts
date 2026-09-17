@@ -3,7 +3,7 @@ import { getAdminSupabase } from '@/lib/supabase-admin';
 import { scoreBehavioral,scoreVocational } from '@/lib/scoring';
 
 export async function POST(req:Request){
-  const {token,answers}=await req.json();
+  const {token,answers,respondent_name}=await req.json();
   if(!token||!answers)return NextResponse.json({error:'Dados inválidos.'},{status:400});
   const a=getAdminSupabase();
   const {data:x,error}=await a.from('assessments').select('*').eq('token',token).is('deleted_at',null).maybeSingle();
@@ -17,6 +17,7 @@ export async function POST(req:Request){
   // Conditional update makes the one-use rule server-side and atomic.
   const {data:updated,error:u}=await a.from('assessments').update({
     answers,
+    respondent_name: String(respondent_name||x.participant_name||'').trim()||x.participant_name,
     result,
     status:'completed',
     completed_at:now,

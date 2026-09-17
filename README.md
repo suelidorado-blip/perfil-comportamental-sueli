@@ -45,3 +45,18 @@ No Supabase, use Authentication > Users para criar o primeiro usuario com e-mail
 3. Configure as variaveis de ambiente.
 4. Rode o SQL do Supabase.
 5. Faça o deploy.
+
+## Atualizacao v2 - avaliacao comportamental em blocos
+
+O teste comportamental agora possui 64 perguntas em quatro etapas:
+1. DISC - 24 perguntas (6 para cada dimensao D/I/S/C)
+2. Estilo de comunicacao - 10 perguntas
+3. Valores de Spranger - 18 perguntas
+4. Preferencias no ambiente de trabalho - 12 perguntas
+
+O participante precisa informar o nome completo antes de iniciar. O nome respondido fica salvo em `respondent_name`.
+
+Se o seu banco Supabase ja existe, rode no SQL Editor:
+`supabase/migration-v2-blocos.sql`
+
+Depois envie os arquivos atualizados ao GitHub e faca push. O Vercel fara novo deploy automaticamente.

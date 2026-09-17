@@ -9,7 +9,7 @@ export async function getServerSupabase(){
     {
       cookies:{
         getAll(){return cookieStore.getAll()},
-        setAll(items){try{items.forEach(({name,value,options})=>cookieStore.set(name,value,options))}catch{} }
+        setAll(items: { name: string; value: string; options?: any }[]){try{items.forEach(({name,value,options})=>cookieStore.set(name,value,options))}catch{} }
       }
     }
   );

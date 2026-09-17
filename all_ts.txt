@@ -1,0 +1,341 @@
+--- /mnt/data/buildfix/app/admin/page.tsx
+import { redirect } from 'next/navigation';
+import { getServerSupabase } from '@/lib/supabase-server';
+import { logoutAction } from '../login/actions';
+import AdminClient from './ui';
+export default async function Admin(){const supabase=await getServerSupabase();const {data:{user}}=await supabase.auth.getUser();if(!user)redirect('/login');return <><header className="topbar"><div className="topbar-inner"><div className="brand">Perfil & Vocacional</div><form action={logoutAction}><button className="btn btn-secondary">Sair</button></form></div></header><AdminClient/></>}
+--- /mnt/data/buildfix/app/admin/ui.tsx
+'use client';
+import { useEffect,useMemo,useState } from 'react';
+
+type Assessment={id:string,participant_name:string,participant_contact:string|null,context:string|null,type:'behavioral'|'vocational',status:string,created_at:string,completed_at:string|null,token:string,result:any,deleted_at?:string|null,deletion_reason?:string|null};
+export default function AdminClient(){
+ const [items,setItems]=useState<Assessment[]>([]); const [name,setName]=useState(''); const [start,setStart]=useState(''); const [end,setEnd]=useState(''); const [form,setForm]=useState({participant_name:'',participant_contact:'',context:'',type:'behavioral'}); const [created,setCreated]=useState<string|null>(null); const [showDeleted,setShowDeleted]=useState(false);
+ async function load(){const r=await fetch(`/api/assessments${showDeleted?'?deleted=1':''}`,{cache:'no-store'});if(r.ok)setItems(await r.json())}
+ useEffect(()=>{load()},[showDeleted]);
+ async function create(e:React.FormEvent){e.preventDefault();const r=await fetch('/api/assessments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(form)});const d=await r.json();if(r.ok){setCreated(d.url);setForm({participant_name:'',participant_contact:'',context:'',type:'behavioral'});load()}else alert(d.error||'Erro ao criar avaliação')}
+ async function removeItem(x:Assessment){const reason=window.prompt('Motivo da exclusão (opcional):','Preenchimento incorreto');if(reason===null)return;if(!window.confirm(`Excluir o relatório de ${x.participant_name}? Ele irá para Relatórios excluídos e poderá ser restaurado.`))return;const r=await fetch('/api/assessments',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.id,reason})});const d=await r.json();if(!r.ok)return alert(d.error||'Não foi possível excluir.');load()}
+ async function restoreItem(x:Assessment){const r=await fetch('/api/assessments',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.id,action:'restore'})});const d=await r.json();if(!r.ok)return alert(d.error||'Não foi possível restaurar.');load()}
+ async function permanentlyDelete(x:Assessment){if(!window.confirm(`Excluir definitivamente ${x.participant_name}? Esta ação não poderá ser desfeita.`))return;const r=await fetch('/api/assessments',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.id,action:'permanent'})});const d=await r.json();if(!r.ok)return alert(d.error||'Não foi possível excluir definitivamente.');load()}
+ const filtered=useMemo(()=>items.filter(x=>{const d=new Date(x.completed_at||x.created_at);const q=x.participant_name.toLowerCase().includes(name.toLowerCase());const a=!start||d>=new Date(start+'T00:00:00');const b=!end||d<=new Date(end+'T23:59:59.999');return q&&a&&b}),[items,name,start,end]);
+ const done=items.filter(x=>x.status==='completed').length;
+ const statusLabel=(s:string)=>s==='completed'?'Concluído':s==='started'?'Iniciado':s==='cancelled'?'Cancelado':'Pendente';
+ return <main className="container grid">
+  {!showDeleted&&<section className="grid grid-3"><div className="card"><div className="muted">Avaliações</div><div className="kpi">{items.length}</div></div><div className="card"><div className="muted">Concluídas</div><div className="kpi">{done}</div></div><div className="card"><div className="muted">Em aberto</div><div className="kpi">{items.length-done}</div></div></section>}
+  {!showDeleted&&<section className="card"><h2 className="section-title">Criar avaliação</h2><form onSubmit={create} className="grid grid-2"><div><label className="label">Nome</label><input className="input" required value={form.participant_name} onChange={e=>setForm({...form,participant_name:e.target.value})}/></div><div><label className="label">Contato (opcional)</label><input className="input" value={form.participant_contact} onChange={e=>setForm({...form,participant_contact:e.target.value})}/></div><div><label className="label">Vaga, setor ou objetivo</label><input className="input" value={form.context} onChange={e=>setForm({...form,context:e.target.value})}/></div><div><label className="label">Tipo</label><select className="input" value={form.type} onChange={e=>setForm({...form,type:e.target.value})}><option value="behavioral">Perfil comportamental</option><option value="vocational">Teste vocacional</option></select></div><div><button className="btn btn-primary">Gerar link individual</button></div></form>{created&&<div style={{marginTop:16,padding:14,background:'#f3f4f6',borderRadius:10}}><b>Link de uso único:</b><br/><span style={{wordBreak:'break-all'}}>{created}</span><div style={{marginTop:8}}><button className="btn btn-secondary" onClick={()=>navigator.clipboard.writeText(created)}>Copiar link</button></div></div>}</section>}
+  <section className="card"><div style={{display:'flex',justifyContent:'space-between',gap:12,alignItems:'center',flexWrap:'wrap'}}><h2 className="section-title">{showDeleted?'Relatórios excluídos':'Histórico'}</h2><button className="btn btn-secondary" onClick={()=>setShowDeleted(v=>!v)}>{showDeleted?'Voltar ao histórico':'Ver relatórios excluídos'}</button></div><div className="grid grid-3" style={{marginBottom:16}}><div><label className="label">Pesquisar nome</label><input className="input" value={name} onChange={e=>setName(e.target.value)} placeholder="Nome da pessoa"/></div><div><label className="label">Data inicial</label><input className="input" type="date" value={start} onChange={e=>setStart(e.target.value)}/></div><div><label className="label">Data final</label><input className="input" type="date" value={end} onChange={e=>setEnd(e.target.value)}/></div></div><div style={{overflowX:'auto'}}><table><thead><tr><th>Nome</th><th>Tipo</th><th>Contexto</th><th>Status</th><th>Data</th>{showDeleted&&<th>Motivo</th>}<th>Ação</th></tr></thead><tbody>{filtered.map(x=><tr key={x.id}><td>{x.participant_name}</td><td>{x.type==='behavioral'?'Comportamental':'Vocacional'}</td><td>{x.context||'-'}</td><td><span className={'badge '+(x.status==='completed'?'ok':'')}>{statusLabel(x.status)}</span></td><td>{new Date(x.completed_at||x.created_at).toLocaleDateString('pt-BR')}</td>{showDeleted&&<td>{x.deletion_reason||'-'}</td>}<td>{showDeleted?<div style={{display:'flex',gap:8,flexWrap:'wrap'}}><button className="btn btn-secondary" onClick={()=>restoreItem(x)}>Restaurar</button><button className="btn btn-secondary" onClick={()=>permanentlyDelete(x)}>Excluir definitivamente</button></div>:<div style={{display:'flex',gap:8,flexWrap:'wrap'}}>{x.status==='completed'?(x.type==='behavioral'?<><button className="btn btn-secondary" onClick={()=>openReport(x,'manager')}>Relatório gerencial</button><button className="btn btn-secondary" onClick={()=>openReport(x,'personal')}>Desenvolvimento pessoal</button></>:<button className="btn btn-secondary" onClick={()=>openReport(x,'vocational')}>Relatório / PDF</button>):<button className="btn btn-secondary" onClick={()=>navigator.clipboard.writeText(`${location.origin}/t/${x.token}`)}>Copiar link</button>}<button className="btn btn-secondary" onClick={()=>removeItem(x)}>Excluir</button></div>}</td></tr>)}</tbody></table></div></section>
+ </main>
+ function openReport(x:Assessment,mode:'manager'|'personal'|'vocational'){
+  const w=window.open('','_blank');if(!w)return;const result=x.result||{};
+  const title=x.type==='vocational'?'Relatório de Orientação Vocacional':mode==='manager'?'Relatório Gerencial de Perfil Comportamental':'Relatório de Desenvolvimento Pessoal';
+  const rows=x.type==='behavioral'?behaviorDetailedRows(result,mode==='manager'?'manager':'personal'):vocRows(result);
+  w.document.write(`<html><head><meta charset="utf-8"><title>${title} - ${escapeHtml(x.participant_name)}</title><style>body{font-family:Arial,sans-serif;padding:38px;color:#1f2937;line-height:1.5;max-width:900px;margin:auto}h1{color:#243a5a;margin-bottom:6px}h2{color:#243a5a;margin-top:0}h3{color:#334155;margin-bottom:6px}.sub{color:#64748b;margin-top:0}.box{border:1px solid #dfe3e8;border-radius:12px;padding:18px;margin:16px 0;page-break-inside:avoid}.item{border-top:1px solid #eceff3;padding-top:14px;margin-top:14px}.item:first-of-type{border-top:0;padding-top:0;margin-top:0}.score{font-weight:700;color:#243a5a}.callout{background:#f8fafc;border-left:4px solid #94a3b8;padding:12px 14px;margin:12px 0}.small{font-size:12px;color:#64748b}.note{font-size:12px;color:#666;margin-top:30px}ul{margin-top:6px;padding-left:20px}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #eee;padding:8px;text-align:left}@media print{button{display:none}body{padding:10px}.box{break-inside:avoid}}</style></head><body><h1>${title}</h1><p class="sub">Leitura explicada, item a item, dos resultados da avaliação.</p><p><b>Nome:</b> ${escapeHtml(x.participant_name)}<br/><b>Contexto:</b> ${escapeHtml(x.context||'-')}<br/><b>Data:</b> ${new Date(x.completed_at||x.created_at).toLocaleDateString('pt-BR')}</p>${rows}<div class="note">Este relatório é uma ferramenta de apoio ao autoconhecimento, desenvolvimento e conversas de gestão. Não constitui diagnóstico psicológico e não deve ser usado isoladamente para decisões de contratação, promoção, desligamento ou carreira. Resultados descrevem tendências declaradas no momento da avaliação e devem ser confrontados com comportamentos observáveis e contexto.</div><br/><button onclick="window.print()">Salvar / Imprimir PDF</button></body></html>`);w.document.close()
+ }
+}
+
+const discInfo:any={
+ D:{name:'Dominância',measures:'Ritmo de decisão, assertividade, iniciativa, foco em resultado e disposição para assumir controle diante de desafios.',high:'Tende a agir com rapidez, assumir decisões e buscar avanço. Pode demonstrar objetividade, competitividade e menor tolerância a demora.',mid:'Tende a alternar firmeza e cautela conforme o contexto. Consegue assumir a frente quando necessário, sem buscar controle o tempo todo.',low:'Tende a evitar confronto direto e decisões precipitadas, preferindo cooperação, consenso ou maior segurança antes de agir.',managerHigh:'Dê objetivos claros, autonomia dentro de limites e feedback objetivo. Evite microgerenciamento desnecessário. Observe impaciência, atropelo de etapas e escuta reduzida sob pressão.',managerLow:'Dê segurança para decidir, critérios claros e espaço para construir confiança. Observe adiamento de decisões difíceis e excesso de busca por concordância.',personalHigh:'Seu desafio é combinar velocidade com escuta, checagem e consideração do impacto das decisões sobre outras pessoas.',personalLow:'Seu desenvolvimento pode envolver maior assertividade, decisões com prazo definido e exposição gradual a situações de posicionamento.'},
+ I:{name:'Influência',measures:'Expressividade, persuasão, entusiasmo, sociabilidade e tendência a mobilizar pessoas por meio da comunicação.',high:'Tende a se expressar com facilidade, criar conexão rapidamente e envolver outras pessoas em ideias e projetos.',mid:'Costuma se comunicar de forma adaptável, alternando exposição e reserva conforme pessoas e contexto.',low:'Tende a ser mais reservado na exposição, preferindo interações com propósito claro e comunicação menos expansiva.',managerHigh:'Use diálogo, reconhecimento específico e espaço para interação. Observe dispersão, promessas em excesso ou perda de detalhes quando a empolgação cresce.',managerLow:'Não confunda reserva com falta de capacidade. Dê tempo de preparação e canais de comunicação adequados. Observe se ideias importantes ficam retidas por pouca exposição.',personalHigh:'Seu desenvolvimento passa por equilibrar entusiasmo com escuta, consistência, organização e acompanhamento do que foi combinado.',personalLow:'Pode ser útil praticar exposição de ideias, síntese verbal e participação intencional em situações em que sua voz precisa aparecer.'},
+ S:{name:'Estabilidade',measures:'Constância, paciência, cooperação, preferência por previsibilidade e ritmo sustentado.',high:'Tende a valorizar estabilidade, relações confiáveis e mudanças bem explicadas. Pode demonstrar paciência e constância.',mid:'Consegue lidar com rotina e mudança de forma relativamente equilibrada, dependendo do nível de segurança e do contexto.',low:'Tende a aceitar mudanças e variação com mais facilidade, podendo preferir ambientes rápidos e menos previsíveis.',managerHigh:'Antecipe mudanças, explique motivos e dê tempo razoável de adaptação. Observe resistência silenciosa, dificuldade de dizer não e manutenção de situações que já precisam mudar.',managerLow:'Ofereça variedade e desafios, mas acompanhe consistência e continuidade. Observe perda de interesse em rotinas longas.',personalHigh:'Seu desenvolvimento pode envolver maior flexibilidade diante de mudanças, comunicação de incômodos e decisão mais rápida quando o contexto exige.',personalLow:'Seu desafio pode ser sustentar processos, criar cadência e não abandonar tarefas importantes quando a novidade diminui.'},
+ C:{name:'Conformidade / Critério',measures:'Atenção a detalhes, precisão, padrões, análise, organização e necessidade de critérios claros.',high:'Tende a conferir informações, valorizar qualidade e buscar segurança por meio de dados, padrões e organização.',mid:'Tende a equilibrar precisão e pragmatismo, aprofundando a análise quando percebe maior risco ou complexidade.',low:'Tende a priorizar velocidade e flexibilidade em vez de detalhamento intenso ou regras rígidas.',managerHigh:'Forneça critérios, contexto e padrão de qualidade. Evite mudanças vagas ou instruções contraditórias. Observe perfeccionismo, demora por excesso de análise e rigidez com erros.',managerLow:'Defina controles essenciais e pontos de checagem. Observe descuido com detalhes, documentação e repetibilidade.',personalHigh:'Seu desenvolvimento pode envolver decidir com informação suficiente, não perfeita, além de tolerar variações que não comprometem o resultado.',personalLow:'Pode ser útil criar checklists, rotinas de revisão e critérios mínimos para reduzir erros por pressa ou improviso.'}
+};
+
+const valueInfo:any={
+ 'Religioso / Espiritual':{measures:'Busca de sentido, coerência com convicções, princípios pessoais e percepção de propósito maior.',high:'Tende a se engajar mais quando percebe significado, coerência ética e conexão entre trabalho e princípios.',low:'Propósito e convicções podem ter menor peso relativo na decisão profissional, sem que isso indique ausência de valores ou ética.',manager:'Evite inferir religião, moralidade ou caráter a partir desta pontuação. Use o resultado apenas para compreender quanto sentido e alinhamento com princípios pesam na motivação.',develop:'Reflita sobre quais princípios são inegociáveis para você e como eles orientam decisões, prioridades e limites.'},
+ 'Teórico':{measures:'Busca por conhecimento, compreensão, lógica, evidências, aprendizado e aprofundamento.',high:'Tende a sentir motivação ao aprender, compreender causas e dominar um assunto antes de concluir.',low:'Pode preferir aplicação prática e experiência direta a longos períodos de estudo ou investigação conceitual.',manager:'Quando alto, ofereça contexto, dados e oportunidade de aprendizado. Quando baixo, seja objetivo e conecte informação à aplicação.',develop:'Observe quando aprofundar aumenta a qualidade e quando a busca por mais informação apenas adia a ação.'},
+ 'Estético':{measures:'Valorização de beleza, harmonia, criatividade, experiência, expressão e qualidade do ambiente.',high:'Tende a perceber forma, atmosfera, estética e qualidade da experiência como elementos importantes.',low:'Pode priorizar funcionalidade, resultado e praticidade, dando menor peso relativo à forma ou à experiência estética.',manager:'Quando alto, ambientes, apresentação e liberdade criativa podem influenciar engajamento. Quando baixo, conecte escolhas estéticas a objetivos concretos.',develop:'Use sua sensibilidade para elevar qualidade sem deixar que preferência pessoal se transforme em perfeccionismo ou dificuldade de aceitar soluções funcionais.'},
+ 'Econômico':{measures:'Foco em utilidade, eficiência, produtividade, retorno e transformação de recursos em resultados.',high:'Tende a avaliar escolhas pelo resultado concreto, eficiência e retorno obtido.',low:'Pode dar maior prioridade a propósito, pessoas, conhecimento ou experiência do que ao retorno mensurável imediato.',manager:'Quando alto, deixe metas, indicadores e impacto claros. Quando baixo, ajude a conectar tarefas a resultados sem reduzir toda motivação a números.',develop:'Equilibre eficiência com qualidade, relações e sustentabilidade. Nem tudo que tem valor gera retorno imediato e mensurável.'},
+ 'Social':{measures:'Motivação por contribuir, apoiar, cooperar e gerar impacto positivo em outras pessoas.',high:'Tende a encontrar satisfação em ajudar, apoiar, orientar e perceber benefício humano no que faz.',low:'Pode separar mais claramente trabalho e cuidado relacional, priorizando outros motivadores.',manager:'Quando alto, mostre impacto nas pessoas e reconheça contribuições coletivas. Observe sobrecarga por dificuldade de estabelecer limites.',develop:'Pratique ajudar sem assumir responsabilidades que pertencem aos outros. Cuidado também envolve limite, clareza e responsabilização.'},
+ 'Político / Liderança e Influência':{measures:'Busca por protagonismo, influência, liderança, reconhecimento, poder de decisão e capacidade de direcionar grupos.',high:'Tende a sentir energia quando pode influenciar, liderar, assumir visibilidade ou participar de decisões relevantes.',low:'Pode preferir contribuição técnica ou cooperativa sem necessidade constante de protagonismo ou status.',manager:'Quando alto, ofereça responsabilidade real e critérios claros de autoridade. Observe competição, centralização ou busca excessiva por reconhecimento.',develop:'Desenvolva influência baseada em confiança, competência e serviço, não apenas em posição, controle ou visibilidade.'}
+};
+
+const workInfo:any={
+ Autonomia:{measures:'Preferência por liberdade para decidir como executar objetivos.',high:'Tende a produzir melhor com espaço de decisão e pouca supervisão operacional.',low:'Pode preferir orientação mais próxima, alinhamentos frequentes e limites bem definidos.',manager:'Ajuste o grau de autonomia ao nível de experiência e risco da função. Autonomia não significa ausência de responsabilidade.',develop:'Pratique assumir decisões dentro de limites claros e comunicar riscos antes que virem problemas.'},
+ Estrutura:{measures:'Preferência por processos, expectativas, regras e critérios claramente definidos.',high:'Tende a trabalhar melhor quando sabe exatamente o que se espera e quais parâmetros deve seguir.',low:'Pode tolerar melhor ambiguidade, improviso e construção de caminhos durante a execução.',manager:'Quando alto, reduza ambiguidades e mudanças contraditórias. Quando baixo, mantenha apenas os controles indispensáveis.',develop:'Aprenda a distinguir estrutura que protege qualidade de burocracia que apenas consome energia.'},
+ Variedade:{measures:'Necessidade de mudança, novidade, novos desafios e diversidade de tarefas.',high:'Tende a ganhar energia com mudanças, projetos diferentes e novos estímulos.',low:'Pode preferir aprofundamento, previsibilidade e continuidade.',manager:'Quando alto, varie desafios sem perder acompanhamento. Quando baixo, introduza mudanças com lógica e tempo de adaptação.',develop:'Se gosta de variedade, desenvolva constância. Se prefere estabilidade, exercite adaptação gradual a novidades.'},
+ Concentracao:{measures:'Preferência por períodos de foco com poucas interrupções.',high:'Tende a produzir melhor quando consegue proteger blocos de atenção e finalizar raciocínios.',low:'Pode lidar melhor com interrupções, alternância de demandas e interação frequente.',manager:'Proteja blocos de foco quando a função exigir profundidade. Não interprete necessidade de concentração como isolamento.',develop:'Crie uma rotina que combine disponibilidade para pessoas com períodos claros de atenção profunda.'}
+};
+
+function level(v:number){return v>=4?'alto':v>=3?'moderado':v>=2?'moderado-baixo':'baixo'}
+function behaviorDetailedRows(r:any,mode:'manager'|'personal'){
+ if(!r)return'';
+ const discSorted=Object.entries(r.disc||{}).sort((a:any,b:any)=>Number(b[1])-Number(a[1]));
+ const valuesSorted=Object.entries(r.values||{}).sort((a:any,b:any)=>Number(b[1])-Number(a[1]));
+ const primary=discSorted[0]?.[0] as string; const secondary=discSorted[1]?.[0] as string;
+ const topValues=valuesSorted.slice(0,3).map(([k])=>k);
+ const socialScore=Number(r.socialScore||3);
+ const integrated=`O perfil apresenta maior expressão em ${discInfo[primary]?.name||primary}${secondary?` com apoio de ${discInfo[secondary]?.name||secondary}`:''}. O estilo social foi classificado como ${r.style||'-'}. Entre os motivadores declarados, destacam-se ${topValues.join(', ')}. Essa combinação deve ser entendida como uma tendência, não como uma identidade fixa: contexto, experiência, cultura e responsabilidade podem alterar a forma como esses traços aparecem.`;
+ let html=`<div class="box"><h2>1. Síntese integrada</h2><p>${integrated}</p>${mode==='manager'?`<div class="callout"><b>Uso gerencial:</b> use esta síntese para formular hipóteses e perguntas. Confirme sempre com exemplos reais de comportamento, histórico e exigências da função.</div>`:`<div class="callout"><b>Para seu desenvolvimento:</b> use o relatório para reconhecer padrões, não para se limitar. O objetivo é ampliar repertório e escolha consciente de comportamento.</div>`}</div>`;
+ html+=`<div class="box"><h2>2. Perfil comportamental - DISC</h2><p class="small">Escala de 1 a 5. Pontuações maiores indicam maior presença declarada daquela tendência.</p>`;
+ for(const [k,v0] of discSorted as any){const v=Number(v0);const i=discInfo[k];const interp=v>=3.7?i.high:v<=2.3?i.low:i.mid;const guidance=mode==='manager'?(v>=3.7?i.managerHigh:v<=2.3?i.managerLow:`Observe como esta dimensão aparece em situações de pressão, mudança, conflito e decisão.`):(v>=3.7?i.personalHigh:v<=2.3?i.personalLow:`Você tende a ter flexibilidade nesta dimensão. Observe em quais contextos ela sobe ou desce.`);html+=`<div class="item"><h3>${i.name} <span class="score">${v.toFixed(1)}/5 - ${level(v)}</span></h3><p><b>O que mede:</b> ${i.measures}</p><p><b>O que seu resultado sugere:</b> ${interp}</p><p><b>${mode==='manager'?'Implicação para gestão':'Ponto de desenvolvimento'}:</b> ${guidance}</p></div>`}
+ html+=`</div>`;
+ html+=`<div class="box"><h2>3. Estilo social</h2><h3>${r.style||'-'} <span class="score">${socialScore.toFixed(1)}/5</span></h3><p><b>O que mede:</b> preferência por interação, exposição social e forma de processar ideias. Não mede qualidade de comunicação, inteligência social ou capacidade de relacionamento.</p><p><b>Leitura:</b> ${r.style==='Extrovertido'?'Há maior tendência a ganhar energia na interação, iniciar conversas e processar ideias em contato com outras pessoas.':r.style==='Introvertido'?'Há maior tendência a processar internamente, selecionar interações e precisar de períodos de reserva para recuperar energia e organizar ideias.':'Há equilíbrio entre exposição e reserva. A pessoa pode alternar bastante conforme grupo, tema, confiança e contexto.'}</p><p><b>${mode==='manager'?'Implicação para gestão':'Desenvolvimento'}:</b> ${mode==='manager'?(r.style==='Introvertido'?'Não pressione exposição imediata como prova de engajamento. Dê preparação para reuniões e canais escritos quando fizer sentido.':r.style==='Extrovertido'?'Use interação como recurso, mas preserve espaço para escuta, foco e preparação individual.':'A pessoa tende a adaptar o grau de interação; observe qual contexto aumenta ou reduz sua participação.'):(r.style==='Introvertido'?'Desenvolva exposição intencional sem tentar se transformar em alguém expansivo. Preparação e clareza podem aumentar sua presença.':r.style==='Extrovertido'?'Proteja momentos de reflexão e escuta para que a rapidez social não substitua análise e profundidade.':'Use sua capacidade de alternar interação e reserva de forma consciente, conforme a tarefa exigir.')}</p></div>`;
+ html+=`<div class="box"><h2>4. Valores e motivadores</h2><p class="small">Estrutura baseada nos seis valores de Spranger, com perguntas autorais. As pontuações representam motivadores declarados e não caráter, religião, ética ou mérito profissional.</p>`;
+ for(const [k,v0] of valuesSorted as any){const v=Number(v0);const i=valueInfo[k];const interp=v>=3.7?i.high:v<=2.3?i.low:`Este motivador aparece de forma moderada e tende a ganhar ou perder importância conforme contexto e fase de vida.`;html+=`<div class="item"><h3>${k} <span class="score">${v.toFixed(1)}/5 - ${level(v)}</span></h3><p><b>O que mede:</b> ${i?.measures||''}</p><p><b>O que o resultado sugere:</b> ${interp}</p><p><b>${mode==='manager'?'Implicação para gestão':'Reflexão de desenvolvimento'}:</b> ${mode==='manager'?i?.manager:i?.develop}</p></div>`}
+ html+=`<p><b>Três valores mais presentes:</b> ${topValues.join(' + ')}</p></div>`;
+ html+=`<div class="box"><h2>5. Preferências de ambiente de trabalho</h2><p class="small">Essas pontuações indicam condições que podem facilitar conforto e desempenho, mas não determinam capacidade.</p>`;
+ for(const [k,v0] of Object.entries(r.work||{}) as any){const v=Number(v0);const i=workInfo[k];const interp=v>=3.7?i.high:v<=2.3?i.low:`A preferência é moderada. A pessoa tende a se adaptar, dependendo da tarefa, do risco e da experiência.`;html+=`<div class="item"><h3>${k==='Concentracao'?'Concentração':k} <span class="score">${v.toFixed(1)}/5 - ${level(v)}</span></h3><p><b>O que mede:</b> ${i?.measures||''}</p><p><b>Leitura:</b> ${interp}</p><p><b>${mode==='manager'?'Implicação para gestão':'Ação prática'}:</b> ${mode==='manager'?i?.manager:i?.develop}</p></div>`}
+ html+=`</div>`;
+ if(mode==='manager'){
+  html+=`<div class="box"><h2>6. Perguntas para entrevista ou feedback</h2><ul><li>Em quais situações você costuma decidir rapidamente e em quais prefere analisar mais antes de agir?</li><li>Conte um exemplo de uma mudança que exigiu adaptação. O que facilitou ou dificultou?</li><li>Qual tipo de reconhecimento ou resultado mais aumenta sua motivação?</li><li>Em que tipo de ambiente você sente que produz seu melhor trabalho? O que costuma atrapalhar?</li><li>Qual comportamento seu já precisou ser ajustado para funcionar melhor com uma equipe diferente?</li></ul><div class="callout"><b>Importante:</b> essas perguntas servem para validar o relatório com exemplos concretos. Não trate uma pontuação isolada como evidência suficiente para uma decisão de RH.</div></div>`;
+ }else{
+  html+=`<div class="box"><h2>6. Plano de desenvolvimento pessoal</h2><p>Escolha no máximo dois comportamentos para desenvolver por ciclo. Mudança sustentável costuma vir de prática observável, não de tentar alterar sua personalidade.</p><ul><li><b>Manter:</b> escolha uma força que já traz bons resultados e defina como continuar usando-a sem exagero.</li><li><b>Desenvolver:</b> escolha uma tendência baixa ou um excesso que hoje limita sua atuação.</li><li><b>Prática semanal:</b> transforme o objetivo em uma ação pequena e repetível.</li><li><b>Evidência:</b> defina como saberá que houve melhora: feedback, prazo, qualidade, autonomia, redução de retrabalho ou outro indicador.</li><li><b>Revisão:</b> após 30 dias, registre o que funcionou, o que não funcionou e qual será o próximo ajuste.</li></ul></div>`;
+ }
+ return html;
+}
+function vocRows(r:any){const labels:any={pratico:'Prático',investigativo:'Investigativo',criativo:'Criativo',social:'Social',empreendedor:'Empreendedor',organizacional:'Organizacional'};const sorted=Object.entries(r||{}).sort((a:any,b:any)=>Number(b[1])-Number(a[1]));return `<div class="box"><h2>Áreas de interesse</h2><table><tbody>${sorted.map(([k,v])=>`<tr><td>${labels[k]||k}</td><td>${v}/25</td></tr>`).join('')}</tbody></table></div><div class="box"><h2>Interesses predominantes</h2><p>${sorted.slice(0,3).map(([k])=>labels[k]||k).join(' + ')}</p></div>`}
+function escapeHtml(s:string){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'} as any)[c])}
+--- /mnt/data/buildfix/app/api/assessments/route.ts
+import { NextResponse } from 'next/server';
+import { getServerSupabase } from '@/lib/supabase-server';
+import { getAdminSupabase } from '@/lib/supabase-admin';
+import crypto from 'crypto';
+
+async function currentUser(){
+  const s=await getServerSupabase();
+  const {data:{user}}=await s.auth.getUser();
+  return user;
+}
+
+export async function GET(req:Request){
+  const user=await currentUser();
+  if(!user)return NextResponse.json({error:'unauthorized'},{status:401});
+  const url=new URL(req.url);
+  const showDeleted=url.searchParams.get('deleted')==='1';
+  const a=getAdminSupabase();
+  let q=a.from('assessments').select('*').eq('created_by',user.id).order('created_at',{ascending:false});
+  q=showDeleted?q.not('deleted_at','is',null):q.is('deleted_at',null);
+  const {data,error}=await q;
+  if(error)return NextResponse.json({error:error.message},{status:500});
+  return NextResponse.json(data);
+}
+
+export async function POST(req:Request){
+  const user=await currentUser();
+  if(!user)return NextResponse.json({error:'unauthorized'},{status:401});
+  const body=await req.json();
+  if(!body.participant_name||!['behavioral','vocational'].includes(body.type))return NextResponse.json({error:'Dados inválidos'},{status:400});
+  const token=crypto.randomBytes(24).toString('hex');
+  const a=getAdminSupabase();
+  const {data,error}=await a.from('assessments').insert({
+    participant_name:body.participant_name,
+    participant_contact:body.participant_contact||null,
+    context:body.context||null,
+    type:body.type,
+    token,
+    status:'pending',
+    created_by:user.id
+  }).select().single();
+  if(error)return NextResponse.json({error:error.message},{status:500});
+  const base=process.env.NEXT_PUBLIC_APP_URL||new URL(req.url).origin;
+  return NextResponse.json({id:data.id,url:`${base}/t/${token}`});
+}
+
+export async function DELETE(req:Request){
+  const user=await currentUser();
+  if(!user)return NextResponse.json({error:'unauthorized'},{status:401});
+  const body=await req.json().catch(()=>({}));
+  if(!body.id)return NextResponse.json({error:'ID obrigatório'},{status:400});
+  const a=getAdminSupabase();
+  const {data,error}=await a.from('assessments').update({
+    deleted_at:new Date().toISOString(),
+    deleted_by:user.id,
+    deletion_reason:body.reason||null
+  }).eq('id',body.id).eq('created_by',user.id).is('deleted_at',null).select('id').maybeSingle();
+  if(error)return NextResponse.json({error:error.message},{status:500});
+  if(!data)return NextResponse.json({error:'Avaliação não encontrada ou já excluída.'},{status:404});
+  return NextResponse.json({ok:true});
+}
+
+export async function PATCH(req:Request){
+  const user=await currentUser();
+  if(!user)return NextResponse.json({error:'unauthorized'},{status:401});
+  const body=await req.json().catch(()=>({}));
+  if(!body.id||!['restore','permanent'].includes(body.action))return NextResponse.json({error:'Dados inválidos'},{status:400});
+  const a=getAdminSupabase();
+  if(body.action==='restore'){
+    const {data,error}=await a.from('assessments').update({deleted_at:null,deleted_by:null,deletion_reason:null}).eq('id',body.id).eq('created_by',user.id).not('deleted_at','is',null).select('id').maybeSingle();
+    if(error)return NextResponse.json({error:error.message},{status:500});
+    if(!data)return NextResponse.json({error:'Relatório excluído não encontrado.'},{status:404});
+    return NextResponse.json({ok:true});
+  }
+  const {error}=await a.from('assessments').delete().eq('id',body.id).eq('created_by',user.id).not('deleted_at','is',null);
+  if(error)return NextResponse.json({error:error.message},{status:500});
+  return NextResponse.json({ok:true});
+}
+--- /mnt/data/buildfix/app/api/submit/route.ts
+import { NextResponse } from 'next/server';
+import { getAdminSupabase } from '@/lib/supabase-admin';
+import { scoreBehavioral,scoreVocational } from '@/lib/scoring';
+
+export async function POST(req:Request){
+  const {token,answers}=await req.json();
+  if(!token||!answers)return NextResponse.json({error:'Dados inválidos.'},{status:400});
+  const a=getAdminSupabase();
+  const {data:x,error}=await a.from('assessments').select('*').eq('token',token).is('deleted_at',null).maybeSingle();
+  if(error||!x)return NextResponse.json({error:'Link inválido'},{status:404});
+  if(x.status==='completed'||x.used_at)return NextResponse.json({error:'Esta avaliação já foi concluída. Este link é de uso único.'},{status:409});
+  if(x.status==='cancelled')return NextResponse.json({error:'Esta avaliação foi cancelada.'},{status:410});
+  if(x.expires_at&&new Date(x.expires_at).getTime()<Date.now())return NextResponse.json({error:'Este link expirou.'},{status:410});
+
+  const result=x.type==='behavioral'?scoreBehavioral(answers):scoreVocational(answers);
+  const now=new Date().toISOString();
+  // Conditional update makes the one-use rule server-side and atomic.
+  const {data:updated,error:u}=await a.from('assessments').update({
+    answers,
+    result,
+    status:'completed',
+    completed_at:now,
+    used_at:now
+  }).eq('id',x.id).in('status',['pending','started']).is('used_at',null).is('deleted_at',null).select('id').maybeSingle();
+  if(u)return NextResponse.json({error:u.message},{status:500});
+  if(!updated)return NextResponse.json({error:'Esta avaliação já foi concluída. Este link é de uso único.'},{status:409});
+  return NextResponse.json({ok:true});
+}
+--- /mnt/data/buildfix/app/layout.tsx
+import './globals.css';
+export const metadata={title:'Perfil & Vocacional',description:'Avaliações comportamentais e vocacionais'};
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="pt-BR"><body>{children}</body></html>}
+--- /mnt/data/buildfix/app/login/actions.ts
+'use server';
+import { redirect } from 'next/navigation';
+import { getServerSupabase } from '@/lib/supabase-server';
+export async function loginAction(formData:FormData){
+ const email=String(formData.get('email')||''); const password=String(formData.get('password')||'');
+ const supabase=await getServerSupabase();
+ const {error}=await supabase.auth.signInWithPassword({email,password});
+ if(error) redirect('/login?erro=1');
+ redirect('/admin');
+}
+export async function logoutAction(){const supabase=await getServerSupabase();await supabase.auth.signOut();redirect('/login')}
+--- /mnt/data/buildfix/app/login/page.tsx
+import { loginAction } from './actions';
+export default async function Login({searchParams}:{searchParams:Promise<{erro?:string}>}){const p=await searchParams;return <main className="container" style={{maxWidth:480,paddingTop:80}}><div className="card"><div className="brand" style={{fontSize:22,marginBottom:6}}>Perfil & Vocacional</div><p className="muted" style={{marginTop:0}}>Acesso administrativo</p>{p.erro&&<p style={{color:'#b42318'}}>E-mail ou senha inválidos.</p>}<form action={loginAction} className="grid"><div><label className="label">E-mail</label><input className="input" type="email" name="email" required/></div><div><label className="label">Senha</label><input className="input" type="password" name="password" required/></div><button className="btn btn-primary">Entrar</button></form></div></main>}
+--- /mnt/data/buildfix/app/page.tsx
+import { redirect } from 'next/navigation';
+export default function Home(){redirect('/admin')}
+--- /mnt/data/buildfix/app/t/[token]/page.tsx
+import { getAdminSupabase } from '@/lib/supabase-admin';
+import TestClient from './ui';
+
+export default async function TestPage({params}:{params:Promise<{token:string}>}){
+  const {token}=await params;
+  const a=getAdminSupabase();
+  const {data}=await a.from('assessments').select('id,participant_name,type,status,context,token,expires_at,used_at,deleted_at,started_at').eq('token',token).maybeSingle();
+  if(!data||data.deleted_at)return <main className="container"><div className="card"><h1>Link inválido</h1><p>Esta avaliação não está disponível.</p></div></main>;
+  if(data.status==='cancelled')return <main className="container"><div className="card"><h1>Avaliação indisponível</h1><p>Este link foi cancelado.</p></div></main>;
+  if(data.status==='completed'||data.used_at)return <main className="container"><div className="card"><h1>Avaliação concluída</h1><p>Este link é de uso único e as respostas já foram enviadas.</p></div></main>;
+  if(data.expires_at&&new Date(data.expires_at).getTime()<Date.now())return <main className="container"><div className="card"><h1>Link expirado</h1><p>Solicite um novo link ao responsável pela avaliação.</p></div></main>;
+  if(!data.started_at){
+    await a.from('assessments').update({status:'started',started_at:new Date().toISOString()}).eq('id',data.id).eq('status','pending').is('used_at',null).is('deleted_at',null);
+  }
+  return <TestClient assessment={{...data,status:'started'} as any}/>;
+}
+--- /mnt/data/buildfix/app/t/[token]/ui.tsx
+'use client';
+import { useState } from 'react';
+import { behavioralQuestions,vocationalQuestions } from '@/lib/questions';
+export default function TestClient({assessment}:{assessment:any}){const qs=assessment.type==='behavioral'?behavioralQuestions:vocationalQuestions;const [answers,setAnswers]=useState<Record<string,string>>({});const [sending,setSending]=useState(false);const [done,setDone]=useState(false);async function submit(e:React.FormEvent){e.preventDefault();if(Object.keys(answers).length!==qs.length){alert('Responda todas as perguntas antes de finalizar.');return}setSending(true);const r=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:assessment.token,answers})});setSending(false);if(r.ok)setDone(true);else alert((await r.json()).error||'Não foi possível enviar.')}if(done)return <main className="container" style={{maxWidth:760}}><div className="card"><h1>Respostas enviadas</h1><p>Obrigado. Sua avaliação foi concluída e o responsável já poderá consultar o resultado.</p></div></main>;return <main className="container" style={{maxWidth:860}}><div className="card" style={{marginBottom:18}}><div className="brand">{assessment.type==='behavioral'?'Perfil Comportamental':'Teste Vocacional'}</div><h1>{assessment.participant_name}</h1>{assessment.context&&<p className="muted">{assessment.context}</p>}<p className="muted">Use a escala de 1 a 5, em que 1 significa pouco parecido com você e 5 significa muito parecido com você.</p></div><form onSubmit={submit} className="grid">{qs.map((q,i)=><div className="question" key={q.id}><b>{i+1}. {q.text}</b><div style={{display:'flex',gap:18,flexWrap:'wrap',marginTop:12}}>{q.options.map(o=><label key={o.label} className="option"><input type="radio" name={q.id} checked={answers[q.id]===o.value} onChange={()=>setAnswers({...answers,[q.id]:o.value})}/>{o.label}</label>)}</div></div>)}<button className="btn btn-primary" disabled={sending}>{sending?'Enviando...':'Finalizar avaliação'}</button></form></main>}
+--- /mnt/data/buildfix/lib/questions.ts
+export type Q={id:string;text:string,kind:'disc'|'social'|'value'|'work'|'vocational',options:{label:string,value:string}[]};
+const scale=[1,2,3,4,5].map(n=>({label:String(n),value:String(n)}));
+export const behavioralQuestions:Q[]=[
+{id:'d1',kind:'disc',text:'Quando surge um problema inesperado, minha tendência é agir rapidamente para resolver.',options:scale},
+{id:'i1',kind:'disc',text:'Tenho facilidade para iniciar conversas e envolver outras pessoas.',options:scale},
+{id:'s1',kind:'disc',text:'Prefiro ambientes estáveis, cooperativos e com mudanças bem explicadas.',options:scale},
+{id:'c1',kind:'disc',text:'Antes de concluir uma tarefa, costumo conferir detalhes e critérios.',options:scale},
+{id:'d2',kind:'disc',text:'Sinto-me confortável assumindo decisões e responsabilidades.',options:scale},
+{id:'i2',kind:'disc',text:'Costumo demonstrar entusiasmo ao apresentar ideias.',options:scale},
+{id:'s2',kind:'disc',text:'Tenho paciência para apoiar pessoas e acompanhar processos.',options:scale},
+{id:'c2',kind:'disc',text:'Gosto de trabalhar com informações claras, padrões e organização.',options:scale},
+{id:'social1',kind:'social',text:'Em grupos novos, costumo iniciar conversas espontaneamente.',options:scale},
+{id:'social2',kind:'social',text:'Depois de muitas interações sociais, geralmente preciso de um tempo mais reservado.',options:scale},
+{id:'social3',kind:'social',text:'Costumo pensar falando e organizar minhas ideias em conversa.',options:scale},
+{id:'social4',kind:'social',text:'Prefiro refletir sozinho antes de expor minha opinião.',options:scale},
+
+// Valores - estrutura inspirada nos seis valores clássicos de Spranger.
+// As perguntas abaixo são autorais e não reproduzem instrumentos proprietários.
+{id:'value_religioso_1',kind:'value',text:'Sinto-me mais motivado quando o que faço está alinhado aos meus princípios e ao meu senso de propósito.',options:scale},
+{id:'value_religioso_2',kind:'value',text:'Em decisões importantes, considero fortemente aquilo que acredito ser certo e coerente com minhas convicções.',options:scale},
+{id:'value_religioso_3',kind:'value',text:'Encontrar sentido no trabalho e perceber que ele se conecta a algo maior é importante para mim.',options:scale},
+
+{id:'value_teorico_1',kind:'value',text:'Tenho prazer em compreender como e por que as coisas funcionam.',options:scale},
+{id:'value_teorico_2',kind:'value',text:'Antes de formar uma opinião, gosto de buscar informações, evidências e explicações.',options:scale},
+{id:'value_teorico_3',kind:'value',text:'Aprender, estudar e ampliar meu conhecimento é uma fonte importante de motivação.',options:scale},
+
+{id:'value_estetico_1',kind:'value',text:'Ambientes bonitos, harmoniosos e bem cuidados influenciam positivamente meu bem-estar e minha motivação.',options:scale},
+{id:'value_estetico_2',kind:'value',text:'Valorizo criatividade, forma, estilo e qualidade da experiência no que faço.',options:scale},
+{id:'value_estetico_3',kind:'value',text:'Tenho satisfação em tornar algo mais agradável, expressivo ou visualmente harmonioso.',options:scale},
+
+{id:'value_economico_1',kind:'value',text:'Costumo avaliar se uma atividade gera resultado concreto, utilidade ou retorno.',options:scale},
+{id:'value_economico_2',kind:'value',text:'Eficiência, produtividade e bom uso de recursos são importantes para mim.',options:scale},
+{id:'value_economico_3',kind:'value',text:'Sinto-me motivado quando consigo transformar esforço em resultados mensuráveis.',options:scale},
+
+{id:'value_social_1',kind:'value',text:'A possibilidade de ajudar pessoas e contribuir para o bem-estar delas é importante para mim.',options:scale},
+{id:'value_social_2',kind:'value',text:'Sinto satisfação quando posso apoiar, orientar ou facilitar o desenvolvimento de alguém.',options:scale},
+{id:'value_social_3',kind:'value',text:'Cooperação e impacto positivo nas pessoas pesam bastante nas minhas escolhas.',options:scale},
+
+{id:'value_politico_1',kind:'value',text:'Sinto-me motivado quando posso liderar, influenciar decisões ou mobilizar pessoas.',options:scale},
+{id:'value_politico_2',kind:'value',text:'Gosto de assumir protagonismo e responsabilidade por decisões importantes.',options:scale},
+{id:'value_politico_3',kind:'value',text:'Reconhecimento, influência e capacidade de gerar direção para um grupo são aspectos que valorizo.',options:scale},
+
+{id:'work_autonomy',kind:'work',text:'Prefiro receber um objetivo claro e liberdade para escolher como chegar até ele.',options:scale},
+{id:'work_structure',kind:'work',text:'Trabalho melhor quando existem processos e expectativas bem definidos.',options:scale},
+{id:'work_variety',kind:'work',text:'Tenho mais energia quando minha rotina apresenta variedade e novos desafios.',options:scale},
+{id:'work_focus',kind:'work',text:'Produzo melhor quando tenho períodos de concentração sem muitas interrupções.',options:scale}
+];
+export const vocationalQuestions:Q[]=[
+['r1','Gosto de atividades práticas, ferramentas, montagem ou execução concreta.','pratico'],['r2','Aprendo melhor fazendo e testando na prática.','pratico'],['r3','Sinto satisfação ao ver um resultado físico e concreto do meu trabalho.','pratico'],['r4','Tenho interesse por atividades técnicas ou operacionais.','pratico'],['r5','Prefiro problemas que possam ser resolvidos com ação prática.','pratico'],
+['i1','Gosto de investigar causas, padrões e explicações.','investigativo'],['i2','Tenho interesse por pesquisa, análise e raciocínio lógico.','investigativo'],['i3','Costumo aprofundar assuntos antes de formar uma opinião.','investigativo'],['i4','Gosto de resolver problemas complexos.','investigativo'],['i5','Sinto curiosidade por ciência, dados ou tecnologia.','investigativo'],
+['a1','Gosto de criar ideias, imagens, textos ou soluções originais.','criativo'],['a2','Sinto-me atraído por atividades com liberdade de expressão.','criativo'],['a3','Tenho prazer em imaginar novas possibilidades.','criativo'],['a4','Prefiro ambientes onde posso experimentar formas diferentes de fazer.','criativo'],['a5','Tenho interesse por design, comunicação, arte ou criação.','criativo'],
+['s1','Gosto de ajudar, orientar ou ensinar pessoas.','social'],['s2','Tenho interesse em compreender necessidades humanas.','social'],['s3','Sinto satisfação quando meu trabalho melhora a vida de alguém.','social'],['s4','Tenho paciência para ouvir e apoiar pessoas.','social'],['s5','Prefiro trabalhos com interação humana significativa.','social'],
+['e1','Gosto de persuadir, negociar ou apresentar ideias.','empreendedor'],['e2','Sinto-me confortável assumindo liderança.','empreendedor'],['e3','Tenho interesse por negócios, vendas ou gestão.','empreendedor'],['e4','Metas e desafios competitivos costumam me estimular.','empreendedor'],['e5','Gosto de mobilizar pessoas em torno de uma ideia.','empreendedor'],
+['o1','Gosto de organizar informações, documentos ou processos.','organizacional'],['o2','Sinto-me bem trabalhando com planejamento e controle.','organizacional'],['o3','Tenho atenção para rotinas, prazos e detalhes.','organizacional'],['o4','Prefiro ambientes com regras e responsabilidades claras.','organizacional'],['o5','Gosto de manter informações e tarefas bem estruturadas.','organizacional']
+].map(([id,text,value])=>({id,kind:'vocational' as const,text,options:scale.map(x=>({...x,value:`${value}:${x.value}`}))}));
+--- /mnt/data/buildfix/lib/scoring.ts
+export function scoreBehavioral(ans:Record<string,string>){
+ const avg=(ids:string[])=>ids.reduce((s,id)=>s+Number(ans[id]||0),0)/ids.length;
+ const disc={D:avg(['d1','d2']),I:avg(['i1','i2']),S:avg(['s1','s2']),C:avg(['c1','c2'])};
+ const ext=(avg(['social1','social3'])+(6-avg(['social2','social4'])))/2;
+ const style=ext>=3.7?'Extrovertido':ext<=2.3?'Introvertido':'Ambivertido';
+ const values={
+  'Religioso / Espiritual':avg(['value_religioso_1','value_religioso_2','value_religioso_3']),
+  'Teórico':avg(['value_teorico_1','value_teorico_2','value_teorico_3']),
+  'Estético':avg(['value_estetico_1','value_estetico_2','value_estetico_3']),
+  'Econômico':avg(['value_economico_1','value_economico_2','value_economico_3']),
+  'Social':avg(['value_social_1','value_social_2','value_social_3']),
+  'Político / Liderança e Influência':avg(['value_politico_1','value_politico_2','value_politico_3'])
+ };
+ const work={Autonomia:Number(ans.work_autonomy||0),Estrutura:Number(ans.work_structure||0),Variedade:Number(ans.work_variety||0),Concentracao:Number(ans.work_focus||0)};
+ return {disc,style,socialScore:ext,values,work,valueModel:'Seis valores de Spranger - perguntas autorais'};
+}
+export function scoreVocational(ans:Record<string,string>){
+ const totals:Record<string,number>={pratico:0,investigativo:0,criativo:0,social:0,empreendedor:0,organizacional:0};
+ Object.values(ans).forEach(v=>{const [k,n]=String(v).split(':');if(k in totals)totals[k]+=Number(n)});
+ return totals;
+}
+--- /mnt/data/buildfix/lib/supabase-admin.ts
+import { createClient } from '@supabase/supabase-js';
+export function getAdminSupabase(){
+  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.SUPABASE_SERVICE_ROLE_KEY!,{auth:{persistSession:false}})
+}
+--- /mnt/data/buildfix/lib/supabase-server.ts
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+
+export async function getServerSupabase(){
+  const cookieStore=await cookies();
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies:{
+        getAll(){return cookieStore.getAll()},
+        setAll(items: { name: string; value: string; options?: any }[]){try{items.forEach(({name,value,options})=>cookieStore.set(name,value,options))}catch{} }
+      }
+    }
+  );
+}
+--- /mnt/data/buildfix/next-env.d.ts
+/// <reference types="next" />
+/// <reference types="next/image-types/global" />

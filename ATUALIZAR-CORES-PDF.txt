@@ -1,0 +1,9 @@
+ATUALIZAÇÃO - CORES NO PDF
+
+Esta versão força a preservação das cores na impressão e ao salvar em PDF, inclusive nos cards e gráficos DISC.
+
+Foi aplicado print-color-adjust: exact / -webkit-print-color-adjust: exact nas páginas de relatório e no modo de impressão.
+
+Observação: navegadores ainda podem respeitar uma preferência manual do usuário. No Chrome/Edge, se alguma cor continuar ausente, abra Mais configurações na janela de impressão e marque Gráficos de fundo.
+
+Não exige alteração no Supabase.

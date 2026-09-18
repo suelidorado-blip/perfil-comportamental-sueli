@@ -1,0 +1,22 @@
+ATUALIZACAO - VALORES E MOTIVADORES DETALHADOS
+
+Esta versao melhora a interpretacao dos valores no Perfil Comportamental.
+
+Mudancas:
+- Explicacao mais profunda de cada valor.
+- Para cada valor, o relatorio mostra:
+  1. O que representa.
+  2. Como pode aparecer no dia a dia.
+  3. O que tende a motivar.
+  4. Ponto de atencao.
+  5. Aplicacao gerencial ou reflexao de desenvolvimento, conforme o relatorio.
+- Leitura integrada quando os principais valores aparecem muito proximos.
+- Evita tratar um valor como claramente dominante quando os percentuais estao praticamente empatados.
+- Mantem o cuidado de nao usar o valor Religioso / Espiritual como medida de carater, etica ou criterio automatico de contratacao.
+
+Abrangencia:
+- Relatorio Resumido
+- Relatorio Gerencial
+- Relatorio de Desenvolvimento Pessoal
+
+Nao exige alteracao no Supabase.

@@ -65,13 +65,64 @@ const discInfo:any={
  C:{name:'Conformidade',measures:'Criterio, qualidade, organizacao, analise e atencao a padroes.',high:'Maior tendencia a analisar, conferir e buscar consistencia antes de concluir.',low:'Maior tendencia a simplificar, experimentar e agir com menos dependencia de regras.',manager:'Ajuste o nivel de detalhe, controle e autonomia a complexidade real da funcao.',personal:'Busque equilibrio entre qualidade e velocidade para evitar tanto retrabalho quanto excesso de analise.'}
 };
 const valueInfo:any={
- 'Religioso / Espiritual':{measures:'Busca de proposito, coerencia com principios, sentido e conviccoes.',manager:'Trate como motivador declarado e nunca como medida de carater, religiao correta ou criterio automatico de contratacao.',personal:'Observe quais atividades aumentam sua percepcao de sentido e coerencia com seus principios.'},
- 'Teorico':{measures:'Conhecimento, compreensao, estudo, investigacao e busca de explicacoes.',manager:'Aprendizado, contexto e desafios intelectuais podem aumentar engajamento.',personal:'Transforme curiosidade em conhecimento aplicado, evitando acumular informacao sem execucao.'},
- 'Estetico':{measures:'Harmonia, criatividade, beleza, experiencia e qualidade do ambiente.',manager:'Qualidade visual, experiencia e liberdade criativa podem ser motivadores relevantes.',personal:'Use sensibilidade e criatividade sem deixar que a busca pelo ideal paralise a entrega.'},
- 'Economico':{measures:'Utilidade, eficiencia, produtividade, resultado e retorno.',manager:'Metas, indicadores e clareza de resultado tendem a tornar o trabalho mais significativo.',personal:'Use foco em resultado sem reduzir pessoas ou processos apenas ao que e mensuravel.'},
- 'Social':{measures:'Contribuicao, cooperacao, apoio e impacto positivo nas pessoas.',manager:'Conexao com pessoas e percepcao de contribuicao podem aumentar motivacao.',personal:'Ajude sem assumir responsabilidades que pertencem a outras pessoas; preserve limites.'},
- 'Politico / Lideranca e Influencia':{measures:'Protagonismo, influencia, lideranca, reconhecimento e poder de decisao.',manager:'Responsabilidade, visibilidade e oportunidade de influenciar podem ser motivadores.',personal:'Desenvolva influencia com responsabilidade, escuta e clareza de limites.'}
+ 'Religioso / Espiritual':{
+  measures:'Importância atribuída a propósito, sentido, coerência com princípios pessoais e percepção de que aquilo que faz precisa ter significado.',
+  daily:'No dia a dia, pode aparecer na necessidade de compreender o porquê das atividades e de perceber coerência entre suas responsabilidades e aquilo que considera importante.',
+  motivates:'Atividades com propósito claro, sensação de contribuição, coerência entre discurso e prática e ambientes em que seus princípios pessoais possam ser respeitados.',
+  attention:'Quando essa necessidade é muito forte, pode haver desconforto em contextos percebidos como sem propósito ou desalinhados com seus princípios.',
+  manager:'Trate este resultado apenas como motivador declarado. Ele não mede caráter, ética, qualidade da crença ou adequação religiosa e nunca deve ser usado como critério automático de contratação.',
+  personal:'Observe em quais situações o sentido do trabalho aumenta seu envolvimento e diferencie convicções pessoais de expectativas que precisam ser negociadas no ambiente profissional.'
+ },
+ 'Teorico':{
+  measures:'Interesse por aprender, compreender, investigar, organizar informações e encontrar explicações antes de chegar a conclusões.',
+  daily:'Pode aparecer como necessidade de entender contexto, lógica, funcionamento e critérios das tarefas, além de preferência por decisões fundamentadas.',
+  motivates:'Aprendizado, treinamentos, acesso a informações, desafios intelectuais, possibilidade de aprofundar conhecimento e desenvolver domínio técnico.',
+  attention:'A busca por mais informações pode, em algumas situações, prolongar análises ou decisões que já dispõem de dados suficientes.',
+  manager:'Ofereça contexto, critérios e oportunidades de aprendizado, observando quando mais informação realmente melhora a decisão e quando apenas adia a execução.',
+  personal:'Transforme curiosidade em conhecimento aplicado e defina um ponto de suficiência para a análise antes de agir.'
+ },
+ 'Estetico':{
+  measures:'Valorização de harmonia, criatividade, experiência, qualidade, organização visual e sensibilidade ao ambiente e à forma de realizar as atividades.',
+  daily:'Pode aparecer no cuidado com apresentação, experiência, acabamento, organização e busca de soluções mais agradáveis, criativas ou coerentes.',
+  motivates:'Liberdade criativa, ambientes agradáveis, cuidado com qualidade e apresentação, experiências bem construídas e possibilidade de aprimorar entregas.',
+  attention:'Pode haver maior desconforto em ambientes percebidos como desorganizados, visualmente descuidados ou excessivamente rígidos, além de risco de elevar demais o padrão antes de concluir.',
+  manager:'Considere espaço para criatividade e qualidade de apresentação quando isso fizer sentido para a função, sem transformar preferência estética em exigência universal.',
+  personal:'Use sua sensibilidade para melhorar entregas, mas defina critérios objetivos de conclusão para evitar perfeccionismo improdutivo.'
+ },
+ 'Economico':{
+  measures:'Valorização de utilidade, eficiência, produtividade, retorno e percepção concreta de resultado. Não significa simplesmente interesse por dinheiro.',
+  daily:'Pode aparecer na busca por entender para que algo serve, qual resultado produz, como usar melhor recursos e como tornar processos mais eficientes.',
+  motivates:'Metas claras, indicadores, produtividade, reconhecimento por resultado e percepção de que o esforço gera retorno ou melhoria concreta.',
+  attention:'Atividades muito abstratas ou com resultado pouco visível podem parecer menos estimulantes; em excesso, existe risco de valorizar apenas o que é imediatamente mensurável.',
+  manager:'Dê clareza sobre objetivos, impacto e indicadores relevantes, sem reduzir a contribuição da pessoa somente a números.',
+  personal:'Use o foco em resultado como força, lembrando que nem todo valor profissional aparece de forma imediata ou quantitativa.'
+ },
+ 'Social':{
+  measures:'Valorização de relações humanas, cooperação, contribuição, ajuda e percepção de impacto positivo sobre outras pessoas.',
+  daily:'Pode aparecer em disponibilidade para ajudar, atenção ao clima da equipe, busca por colaboração e satisfação ao perceber que seu trabalho beneficia alguém.',
+  motivates:'Trabalho em equipe, reconhecimento da contribuição, contato com pessoas, ajuda mútua, desenvolvimento de outros e percepção de impacto humano.',
+  attention:'Pode existir tendência a evitar conflitos, assumir responsabilidades alheias ou colocar necessidades dos outros à frente das próprias em algumas situações.',
+  manager:'Valorize contribuição e colaboração, mas preserve clareza de papéis, limites e responsabilidade individual.',
+  personal:'Ajude e coopere sem assumir o que pertence aos outros; pratique conversas difíceis quando forem necessárias.'
+ },
+ 'Politico / Lideranca e Influencia':{
+  measures:'Valorização de protagonismo, influência sobre decisões, visibilidade, liderança, reconhecimento e possibilidade de direcionar situações.',
+  daily:'Pode aparecer no interesse por assumir responsabilidade, participar de decisões, defender ideias, mobilizar pessoas ou ter maior autonomia sobre caminhos e prioridades.',
+  motivates:'Oportunidades de responsabilidade, visibilidade, participação em decisões, liderança de iniciativas e possibilidade de influenciar resultados.',
+  attention:'Quando muito valorizado, pode haver frustração em contextos com pouca autonomia ou reconhecimento; quando aparece mais baixo, isso não significa ausência de capacidade de liderança.',
+  manager:'Não confunda intensidade deste motivador com competência para liderar. Use-o para entender o quanto protagonismo, visibilidade e influência pesam na motivação.',
+  personal:'Desenvolva influência com responsabilidade, escuta e clareza de limites, sem usar reconhecimento externo como única medida de sucesso.'
+ }
 };
+function integratedValuesText(values:any[],firstName='A pessoa'){
+ if(!values.length)return 'Os motivadores devem ser explorados em conversa e observação de situações reais.';
+ const sorted=values.map(([k,v])=>[String(k),Number(v)] as [string,number]).sort((a,b)=>b[1]-a[1]);
+ const top=sorted.slice(0,4); const spread=top.length>1?top[0][1]-top[top.length-1][1]:0;
+ const names=top.map(([k])=>k);
+ if(top.length>=4 && spread<=3)return `Os resultados mostram uma distribuição bastante equilibrada entre ${names.join(', ')}. Isso sugere que a motivação de ${firstName} provavelmente não depende de um único fator, mas da combinação entre esses motivadores. A leitura deve priorizar a forma como eles se complementam no contexto real.`;
+ if(top.length>=3 && top[0][1]-top[2][1]<=3)return `Os três motivadores mais presentes — ${names.slice(0,3).join(', ')} — aparecem muito próximos entre si. Em vez de tratar apenas o primeiro como dominante, vale observar como essa combinação influencia escolhas, engajamento e satisfação no trabalho.`;
+ return `Os motivadores mais presentes são ${names.slice(0,3).join(', ')}. Eles indicam fatores que podem aumentar interesse e engajamento, mas devem ser interpretados em conjunto com contexto, função e comportamentos observáveis.`;
+}
 const discColors:any={D:'#d94a45',I:'#f2c94c',S:'#4caf73',C:'#4a7bd0'};
 const valueColors=['#6f918b','#c9785d','#8c7bb8','#d8a647','#5d8aa8','#8a9a5b'];
 const riasecColors:any={realista:'#c9785d',investigativo:'#4a7bd0',artistico:'#9b6bb3',social:'#4caf73',empreendedor:'#d99a34',convencional:'#6f918b'};
@@ -154,7 +205,7 @@ function behaviorSummaryRows(r:any,personName:string){
  else if(analysis>=60) workInterpretation=`A preferência por análise sugere maior conforto quando existe tempo suficiente para compreender informações, critérios e consequências antes de decidir.`;
  else if(interaction>=60) workInterpretation=`A preferência por interação sugere maior conforto em ambientes com troca frequente, colaboração e contato com outras pessoas.`;
  const topValues=values.slice(0,4);
- const motivatorText=topValues.length?`Isso indica que ${topValues.map(([k])=>valueInfo[k]?.measures?.toLowerCase()||String(k).toLowerCase()).join('; ')} podem atuar como fatores relevantes de motivação.`:'Os motivadores devem ser explorados em conversa e observação de situações reais.';
+ const motivatorText=integratedValuesText(values,firstName);
  const dev:string[]=[];
  if(Number((r.disc||{}).D||0)<=22)dev.push('fortalecer posicionamento, assertividade e tomada de decisão em situações que exigem rapidez ou informações incompletas');
  if(Number((r.disc||{}).D||0)>=32)dev.push('equilibrar velocidade de decisão com escuta, consulta e consideração do impacto sobre outras pessoas');
@@ -170,7 +221,7 @@ function behaviorSummaryRows(r:any,personName:string){
  html+=`<div class="box"><h2>2. Principais características observadas</h2><p>A avaliação sugere tendência a:</p><ul>${bullets.map(x=>`<li>${escapeHtml(x)};</li>`).join('')}</ul><p>A dimensão menos presente foi <b>${discInfo[String(disc[disc.length-1]?.[0]||'')]?.name||disc[disc.length-1]?.[0]||'-'}</b>, o que pode indicar maior tendência a ${lowMap[String(disc[disc.length-1]?.[0]||'')]||'usar o comportamento complementar com menor frequência'}.</p></div>`;
  html+=`<div class="box"><div class="page-kicker">Comunicação</div><h2>3. Comunicação</h2>${bar('Introversão',intro,'#4a7bd0')}${bar('Extroversão',ext,'#c9785d')}<p>O estilo de comunicação foi classificado como <b>${commLabel}</b>, com <b>${Math.round(intro)}% de introversão</b> e <b>${Math.round(ext)}% de extroversão</b>.</p><p>${commText}</p></div>`;
  html+=`<div class="box"><div class="page-kicker">Ambiente</div><h2>4. Ambiente de trabalho</h2><p>A avaliação mostra maior preferência por:</p>${workBars.join('')}<ul>${workLines.join('')}</ul><p>${workInterpretation}</p></div>`;
- html+=`<div class="box"><div class="page-kicker">Motivadores</div><h2>5. Motivadores</h2><p>Os valores aparecem com maior presença de:</p>${topValues.map(([k,v],idx)=>bar(String(k),Number(v),valueColors[idx%valueColors.length])).join('')}<p>${escapeHtml(motivatorText)}</p></div>`;
+ html+=`<div class="box"><div class="page-kicker">Motivadores</div><h2>5. Motivadores</h2><p>Os valores aparecem com maior presença de:</p>${topValues.map(([k,v],idx)=>bar(String(k),Number(v),valueColors[idx%valueColors.length])).join('')}<div class="callout"><b>Leitura integrada:</b> ${escapeHtml(motivatorText)}</div>${topValues.map(([k,v])=>{const i=valueInfo[String(k)]||{};return `<div class="item"><h3>${escapeHtml(String(k))} <span class="score">${Number(v).toFixed(1)}%</span></h3><p><b>O que representa:</b> ${i.measures||''}</p><p><b>Como pode aparecer no dia a dia:</b> ${i.daily||''}</p><p><b>O que tende a motivar:</b> ${i.motivates||''}</p><p><b>Ponto de atenção:</b> ${i.attention||''}</p></div>`}).join('')}</div>`;
  html+=`<div class="box"><h2>6. Pontos de desenvolvimento</h2><p>Alguns aspectos que podem ser observados e desenvolvidos, conforme as demandas reais do contexto:</p><ul>${uniqueDev.map(x=>`<li>${escapeHtml(x)}.</li>`).join('')}</ul></div>`;
  html+=`<div class="box"><h2>7. Conclusão</h2><p>${conclusion}</p><p>Os resultados devem ser utilizados como ferramenta de desenvolvimento e autoconhecimento, e não como definição fixa de personalidade. As tendências devem ser comparadas com comportamentos observados no dia a dia e com as exigências reais da função.</p></div>`;
  return html;
@@ -188,7 +239,8 @@ function behaviorDetailedRows(r:any,mode:'manager'|'personal'){
  html+=`</div>`;
  const c=r.communication||{};html+=`<div class="box"><h2>3. Estilo de Comunicacao</h2><h3>${c.classification||'-'}</h3>${bar('Extroversão',Number(c.extroversion||0),'#c9785d')}${bar('Introversão',Number(c.introversion||0),'#4a7bd0')}<p><b>O que mede:</b> preferencia por exposicao, interacao e processamento social. Nao mede capacidade de comunicacao, inteligencia ou competencia profissional.</p><p><b>Leitura:</b> ${c.classification==='Extrovertido'?'Ha maior preferencia por troca, expressao e interacao como parte do processamento de ideias.':c.classification==='Introvertido'?'Ha maior preferencia por reflexao interna, interacoes mais seletivas e momentos de reserva.':'Ha equilibrio entre interacao e reserva, com maior variacao conforme contexto, grupo e tema.'}</p><p><b>${mode==='manager'?'Aplicacao gerencial':'Desenvolvimento'}:</b> ${mode==='manager'?'Adapte reunioes, feedbacks e canais de comunicacao sem confundir expansividade com engajamento.':'Observe em quais contextos voce se comunica melhor e pratique conscientemente o estilo complementar quando necessario.'}</p></div>`;
  html+=`<div class="box"><h2>4. Valores e Motivadores</h2><p class="small">Percentuais relativos entre os seis valores. Eles representam prioridades e motivadores declarados, nao carater, etica ou merito profissional.</p>${values.map(([k,v]:any,idx:number)=>bar(k,Number(v),valueColors[idx%valueColors.length])).join('')}`;
- for(const [k,v0] of values as any){const v=Number(v0),i=valueInfo[k];html+=`<div class="item"><h3>${k} <span class="score">${v.toFixed(1)}%</span></h3><p><b>O que representa:</b> ${i?.measures||''}</p><p><b>${mode==='manager'?'Aplicacao gerencial':'Reflexao de desenvolvimento'}:</b> ${mode==='manager'?i?.manager:i?.personal}</p></div>`}
+ html+=`<div class="callout"><b>Leitura integrada dos motivadores:</b> ${escapeHtml(integratedValuesText(values,'a pessoa'))}</div>`;
+ for(const [k,v0] of values as any){const v=Number(v0),i=valueInfo[k]||{};html+=`<div class="item"><h3>${escapeHtml(String(k))} <span class="score">${v.toFixed(1)}%</span></h3><p><b>O que representa:</b> ${i.measures||''}</p><p><b>Como pode aparecer no dia a dia:</b> ${i.daily||''}</p><p><b>O que tende a motivar:</b> ${i.motivates||''}</p><p><b>Ponto de atenção:</b> ${i.attention||''}</p><p><b>${mode==='manager'?'Aplicação gerencial':'Reflexão de desenvolvimento'}:</b> ${mode==='manager'?i.manager:i.personal}</p></div>`}
  html+=`</div>`;
  html+=`<div class="box"><h2>5. Preferencias no Ambiente de Trabalho</h2><p class="small">Cada linha e um continuo. Nao existe lado certo ou errado; o resultado indica preferencia relativa.</p>`;
  for(const x of Object.values(r.work||{}) as any[]){html+=`<div class="item"><h3>${x.labels?.[0]} x ${x.labels?.[1]}</h3>${bar(x.labels?.[0]||'',Number(x.left||0))}${bar(x.labels?.[1]||'',Number(x.right||0))}</div>`}

@@ -100,3 +100,6 @@ Relatórios com páginas separadas, gráficos coloridos e cores DISC padronizada
 - O botão **Salvar em PDF** abre a janela de impressão já com o nome do relatório preparado; selecione **Salvar como PDF** no navegador.
 - O botão **Imprimir** abre a mesma janela para envio à impressora física.
 - Os botões não aparecem no PDF nem na impressão.
+
+## Atualizacao - valores e motivadores detalhados
+Os relatorios comportamentais agora explicam cada valor com significado, manifestacao no dia a dia, motivadores, pontos de atencao e leitura integrada de valores proximos.

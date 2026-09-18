@@ -36,16 +36,16 @@ export default function AdminClient(){
    {view!=='dashboard'&&view!=='new'&&<section className="card"><div className="section-head"><div><p className="eyebrow">HISTÓRICO</p><h2>{view==='deleted'?'Relatórios excluídos':view==='behavioral'?'Avaliações comportamentais':view==='vocational'?'Testes vocacionais':'Resultados concluídos'}</h2></div></div><div className="filters"><div className="filter-search"><label className="label">Pesquisar nome</label><input className="input" value={name} onChange={e=>setName(e.target.value)} placeholder="Digite um nome"/></div><div><label className="label">Data inicial</label><input className="input" type="date" value={start} onChange={e=>setStart(e.target.value)}/></div><div><label className="label">Data final</label><input className="input" type="date" value={end} onChange={e=>setEnd(e.target.value)}/></div>{view!=='deleted'&&<div><label className="label">Status</label><select className="input" value={status} onChange={e=>setStatus(e.target.value)}><option value="">Todos</option><option value="pending">Pendente</option><option value="started">Iniciado</option><option value="completed">Concluído</option><option value="cancelled">Cancelado</option></select></div>}<button className="btn btn-ghost filter-clear" onClick={()=>{setName('');setStart('');setEnd('');setStatus('')}}>Limpar filtros</button></div><AssessmentTable rows={filtered} showDeleted={showDeleted} statusLabel={statusLabel} copyLink={copyLink} removeItem={removeItem} restoreItem={restoreItem} permanentlyDelete={permanentlyDelete} openReport={openReport}/></section>}
   </main>
  </div>
- function openReport(x:Assessment,mode:'manager'|'personal'|'vocational'){
+ function openReport(x:Assessment,mode:'summary'|'manager'|'personal'|'vocational'){
   const w=window.open('','_blank');if(!w)return;const result=x.result||{};
-  const title=x.type==='vocational'?'Relatório de Orientação Vocacional':mode==='manager'?'Relatório Gerencial de Perfil Comportamental':'Relatório de Desenvolvimento Pessoal';
-  const rows=x.type==='behavioral'?behaviorDetailedRows(result,mode==='manager'?'manager':'personal'):vocRows(result);
+  const title=x.type==='vocational'?'Relatório de Orientação Vocacional':mode==='summary'?'Relatório Resumido – Perfil Comportamental':mode==='manager'?'Relatório Gerencial de Perfil Comportamental':'Relatório de Desenvolvimento Pessoal';
+  const rows=x.type==='behavioral'?(mode==='summary'?behaviorSummaryRows(result,x.respondent_name||x.participant_name):behaviorDetailedRows(result,mode==='manager'?'manager':'personal')):vocRows(result);
   w.document.write(`<html><head><meta charset="utf-8"><title>${title} - ${escapeHtml(x.respondent_name||x.participant_name)}</title><style>body{font-family:Arial,sans-serif;padding:38px;color:#263433;line-height:1.55;max-width:900px;margin:auto}h1{color:#174e4a;margin-bottom:6px}h2{color:#174e4a;margin-top:0}h3{color:#314744;margin-bottom:6px}.sub{color:#687b78;margin-top:0}.box{border:1px solid #dce6e3;border-radius:14px;padding:20px;margin:17px 0;page-break-inside:avoid}.item{border-top:1px solid #e9efed;padding-top:14px;margin-top:14px}.item:first-of-type{border-top:0;padding-top:0;margin-top:0}.score{font-weight:700;color:#174e4a}.callout{background:#f4f8f7;border-left:4px solid #6f918b;padding:12px 14px;margin:12px 0}.small{font-size:12px;color:#687b78}.barrow{margin:12px 0}.barlabel{display:flex;justify-content:space-between;gap:12px;font-size:13px}.track{height:12px;background:#e8efed;border-radius:999px;overflow:hidden}.fill{height:100%;background:#174e4a;border-radius:999px}.note{font-size:12px;color:#666;margin-top:30px}ul{margin-top:6px;padding-left:20px}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #eee;padding:8px;text-align:left}@media print{button{display:none}body{padding:10px}.box{break-inside:avoid}}</style></head><body><h1>${title}</h1><p class="sub">Leitura explicada, item a item, dos resultados da avaliação.</p><p><b>Nome:</b> ${escapeHtml(x.respondent_name||x.participant_name)}<br/><b>Contexto:</b> ${escapeHtml(x.context||'-')}<br/><b>Data:</b> ${new Date(x.completed_at||x.created_at).toLocaleDateString('pt-BR')}</p>${rows}<div class="note">Este relatório é uma ferramenta de apoio ao autoconhecimento, desenvolvimento e conversas de gestão. Não constitui diagnóstico psicológico e não deve ser usado isoladamente para decisões de contratação, promoção, desligamento ou carreira. Resultados descrevem tendências declaradas no momento da avaliação e devem ser confrontados com comportamentos observáveis e contexto.</div><br/><button onclick="window.print()">Salvar / Imprimir PDF</button></body></html>`);w.document.close()
  }
 }
 
-function AssessmentTable({rows,showDeleted,statusLabel,copyLink,removeItem,restoreItem,permanentlyDelete,openReport}:{rows:Assessment[],showDeleted:boolean,statusLabel:(s:string)=>string,copyLink:(u:string)=>void,removeItem:(x:Assessment)=>void,restoreItem:(x:Assessment)=>void,permanentlyDelete:(x:Assessment)=>void,openReport:(x:Assessment,m:'manager'|'personal'|'vocational')=>void}){
- return <div className="table-wrap"><table className="modern-table"><thead><tr><th>Nome</th><th>Tipo</th><th>Contexto</th><th>Status</th><th>Data</th>{showDeleted&&<th>Motivo</th>}<th>Ações</th></tr></thead><tbody>{rows.length?rows.map(x=><tr key={x.id}><td><b>{x.respondent_name||x.participant_name}</b></td><td><span className="type-pill">{x.type==='behavioral'?'Comportamental':'Vocacional'}</span></td><td>{x.context||'-'}</td><td><span className={'badge '+(x.status==='completed'?'ok':x.status==='started'?'started':x.status==='cancelled'?'cancelled':'')}>{statusLabel(x.status)}</span></td><td>{new Date(x.completed_at||x.created_at).toLocaleDateString('pt-BR')}</td>{showDeleted&&<td>{x.deletion_reason||'-'}</td>}<td><div className="actions">{showDeleted?<><button className="icon-btn" title="Restaurar" onClick={()=>restoreItem(x)}>↶</button><button className="icon-btn danger" title="Excluir definitivamente" onClick={()=>permanentlyDelete(x)}>⌫</button></>:<>{x.status==='completed'?(x.type==='behavioral'?<><button className="btn btn-small" onClick={()=>openReport(x,'manager')}>Gerencial</button><button className="btn btn-small" onClick={()=>openReport(x,'personal')}>Pessoal</button></>:<button className="btn btn-small" onClick={()=>openReport(x,'vocational')}>Relatório</button>):<button className="btn btn-copy btn-small" onClick={()=>copyLink(`${location.origin}/t/${x.token}`)}>⧉ Copiar link</button>}<button className="icon-btn danger" title="Excluir" onClick={()=>removeItem(x)}>⌫</button></>}</div></td></tr>):<tr><td colSpan={showDeleted?7:6}><div className="empty-state">Nenhuma avaliação encontrada com estes filtros.</div></td></tr>}</tbody></table></div>
+function AssessmentTable({rows,showDeleted,statusLabel,copyLink,removeItem,restoreItem,permanentlyDelete,openReport}:{rows:Assessment[],showDeleted:boolean,statusLabel:(s:string)=>string,copyLink:(u:string)=>void,removeItem:(x:Assessment)=>void,restoreItem:(x:Assessment)=>void,permanentlyDelete:(x:Assessment)=>void,openReport:(x:Assessment,m:'summary'|'manager'|'personal'|'vocational')=>void}){
+ return <div className="table-wrap"><table className="modern-table"><thead><tr><th>Nome</th><th>Tipo</th><th>Contexto</th><th>Status</th><th>Data</th>{showDeleted&&<th>Motivo</th>}<th>Ações</th></tr></thead><tbody>{rows.length?rows.map(x=><tr key={x.id}><td><b>{x.respondent_name||x.participant_name}</b></td><td><span className="type-pill">{x.type==='behavioral'?'Comportamental':'Vocacional'}</span></td><td>{x.context||'-'}</td><td><span className={'badge '+(x.status==='completed'?'ok':x.status==='started'?'started':x.status==='cancelled'?'cancelled':'')}>{statusLabel(x.status)}</span></td><td>{new Date(x.completed_at||x.created_at).toLocaleDateString('pt-BR')}</td>{showDeleted&&<td>{x.deletion_reason||'-'}</td>}<td><div className="actions">{showDeleted?<><button className="icon-btn" title="Restaurar" onClick={()=>restoreItem(x)}>↶</button><button className="icon-btn danger" title="Excluir definitivamente" onClick={()=>permanentlyDelete(x)}>⌫</button></>:<>{x.status==='completed'?(x.type==='behavioral'?<><button className="btn btn-small" onClick={()=>openReport(x,'summary')}>Resumo</button><button className="btn btn-small" onClick={()=>openReport(x,'manager')}>Gerencial</button><button className="btn btn-small" onClick={()=>openReport(x,'personal')}>Pessoal</button></>:<button className="btn btn-small" onClick={()=>openReport(x,'vocational')}>Relatório</button>):<button className="btn btn-copy btn-small" onClick={()=>copyLink(`${location.origin}/t/${x.token}`)}>⧉ Copiar link</button>}<button className="icon-btn danger" title="Excluir" onClick={()=>removeItem(x)}>⌫</button></>}</div></td></tr>):<tr><td colSpan={showDeleted?7:6}><div className="empty-state">Nenhuma avaliação encontrada com estes filtros.</div></td></tr>}</tbody></table></div>
 }
 const discInfo:any={
  D:{name:'Dominancia',measures:'Ritmo de decisao, assertividade, iniciativa e foco em resultado.',high:'Maior tendencia a assumir decisoes, enfrentar desafios e buscar autonomia.',low:'Maior tendencia a cautela, cooperacao e menor necessidade de controlar a situacao.',manager:'Observe como a pessoa equilibra velocidade, escuta e impacto das decisoes.',personal:'Use a objetividade quando ela ajuda, mas desenvolva flexibilidade para ouvir, esperar e ajustar.'},
@@ -62,6 +62,93 @@ const valueInfo:any={
  'Politico / Lideranca e Influencia':{measures:'Protagonismo, influencia, lideranca, reconhecimento e poder de decisao.',manager:'Responsabilidade, visibilidade e oportunidade de influenciar podem ser motivadores.',personal:'Desenvolva influencia com responsabilidade, escuta e clareza de limites.'}
 };
 function bar(label:string,value:number){return `<div class="barrow"><div class="barlabel"><span>${label}</span><b>${Math.round(value)}%</b></div><div class="track"><div class="fill" style="width:${Math.max(0,Math.min(100,value))}%"></div></div></div>`}
+function behaviorSummaryRows(r:any,personName:string){
+ if(!r)return'';
+ const disc=Object.entries(r.disc||{}).sort((a:any,b:any)=>Number(b[1])-Number(a[1])) as [string,number][];
+ const values=Object.entries(r.values||{}).sort((a:any,b:any)=>Number(b[1])-Number(a[1])) as [string,number][];
+ const primary=String(r.discPrimary||disc[0]?.[0]||'');
+ const secondary=String(r.discSecondary||disc[1]?.[0]||'');
+ const pVal=Number((r.disc||{})[primary]||0), sVal=Number((r.disc||{})[secondary]||0);
+ const balanced=Math.abs(pVal-sVal)<=4 && disc.length>2 && Math.abs(Number(disc[0]?.[1]||0)-Number(disc[3]?.[1]||0))<=12;
+ const firstName=escapeHtml(String(personName||'A pessoa').trim().split(/\s+/)[0]||'A pessoa');
+ const profileMap:any={
+  D:'objetivo, direto, orientado a desafios e com maior tendência a agir com rapidez',
+  I:'comunicativo, relacional, persuasivo e com maior tendência a envolver outras pessoas',
+  S:'constante, cooperativo, paciente e atento à estabilidade nas relações e atividades',
+  C:'cuidadoso, analítico, organizado e atento à qualidade, critérios e detalhes'
+ };
+ const lowMap:any={D:'cautela e cooperação',I:'comunicação mais seletiva e reservada',S:'adaptação a mudanças e variedade',C:'praticidade e menor dependência de regras'};
+ const discPhrase=balanced
+   ?`O perfil aparece relativamente equilibrado, com diferenças pequenas entre as dimensões. Ainda assim, há leve predominância de <b>${discInfo[primary]?.name||primary} (${Math.round(pVal)}%)</b> e <b>${discInfo[secondary]?.name||secondary} (${Math.round(sVal)}%)</b>.`
+   :`O resultado apresenta maior predominância de <b>${discInfo[primary]?.name||primary} (${Math.round(pVal)}%)</b> e <b>${discInfo[secondary]?.name||secondary} (${Math.round(sVal)}%)</b>.`;
+ const summaryText=`${discPhrase} De forma geral, ${firstName} tende a apresentar um comportamento ${profileMap[primary]||'compatível com as tendências predominantes'}${secondary?`, combinado com traços de ${profileMap[secondary]||discInfo[secondary]?.name||secondary}`:''}.`;
+ const bullets:string[]=[];
+ const add=(x:string)=>{if(x&&!bullets.includes(x))bullets.push(x)};
+ if(primary==='S'||secondary==='S')add('manter constância e estabilidade nas atividades');
+ if(primary==='C'||secondary==='C')add('analisar antes de concluir e valorizar organização, qualidade e clareza');
+ if(primary==='D'||secondary==='D')add('agir com iniciativa, objetividade e foco em resultado quando o contexto exige');
+ if(primary==='I'||secondary==='I')add('estabelecer conexão por meio da comunicação e do relacionamento');
+ const c=r.communication||{};
+ if(Number(c.introversion||0)>=55)add('preferir reflexão e interações mais seletivas antes de se posicionar');
+ if(Number(c.extroversion||0)>=55)add('processar ideias com maior interação e troca com outras pessoas');
+ const workEntries=Object.values(r.work||{}) as any[];
+ for(const x of workEntries){
+   const l=Number(x.left||0), rr=Number(x.right||0);
+   if(l>=60)add(`demonstrar preferência por ${String(x.labels?.[0]||'').toLowerCase()}`);
+   else if(rr>=60)add(`demonstrar preferência por ${String(x.labels?.[1]||'').toLowerCase()}`);
+ }
+ while(bullets.length>7)bullets.pop();
+ const ext=Number(c.extroversion||0), intro=Number(c.introversion||0);
+ let commLabel='Ambivertido';
+ if(intro>=65)commLabel='Introvertido'; else if(intro>=55)commLabel='Levemente introvertido'; else if(ext>=65)commLabel='Extrovertido'; else if(ext>=55)commLabel='Levemente extrovertido';
+ const commText=intro>=55
+   ?'Isso indica preferência por reflexão, interações mais seletivas e maior processamento interno antes da exposição. Esse resultado não representa dificuldade de comunicação, mas uma preferência de interação.'
+   :ext>=55
+   ?'Isso indica maior preferência por troca, expressão e processamento de ideias em interação. Esse resultado descreve estilo de interação e não mede qualidade da comunicação.'
+   :'Isso indica equilíbrio entre momentos de interação e de reserva, com adaptação relativamente maior ao contexto, ao grupo e ao tema.';
+ const workLines:string[]=[];
+ for(const x of workEntries){
+   const l=Number(x.left||0), rr=Number(x.right||0);
+   const left=String(x.labels?.[0]||''), right=String(x.labels?.[1]||'');
+   const chosen=l>=rr?left:right, value=Math.max(l,rr);
+   workLines.push(`<li>${escapeHtml(chosen)}: ${Math.round(value)}%</li>`);
+ }
+ const wa:any=r.work||{};
+ const autonomy=Number(wa.autonomia_direcionamento?.left||0), direction=Number(wa.autonomia_direcionamento?.right||0);
+ const structure=Number(wa.estrutura_flexibilidade?.left||0), flexibility=Number(wa.estrutura_flexibilidade?.right||0);
+ const routine=Number(wa.rotina_variedade?.left||0), variety=Number(wa.rotina_variedade?.right||0);
+ const individual=Number(wa.individual_interacao?.left||0), interaction=Number(wa.individual_interacao?.right||0);
+ const speed=Number(wa.rapidez_analise?.left||0), analysis=Number(wa.rapidez_analise?.right||0);
+ const competition=Number(wa.competicao_cooperacao?.left||0), cooperation=Number(wa.competicao_cooperacao?.right||0);
+ let workInterpretation='As preferências de ambiente devem ser lidas em conjunto, pois indicam condições que tendem a facilitar o funcionamento natural da pessoa.';
+ if(autonomy>=60 && (routine>=55||structure>=55)) workInterpretation=`Um ponto relevante é a combinação entre necessidade de alguma previsibilidade e preferência por autonomia. ${firstName} tende a responder bem quando entende claramente o objetivo e recebe espaço para conduzir a própria execução.`;
+ else if(autonomy>=60) workInterpretation=`${firstName} tende a responder melhor quando os objetivos estão claros e existe espaço para decidir como executar as responsabilidades.`;
+ else if(direction>=60) workInterpretation=`${firstName} tende a se beneficiar de expectativas, prioridades e critérios de sucesso bem explicitados, especialmente no início de atividades novas.`;
+ else if(analysis>=60) workInterpretation=`A preferência por análise sugere maior conforto quando existe tempo suficiente para compreender informações, critérios e consequências antes de decidir.`;
+ else if(interaction>=60) workInterpretation=`A preferência por interação sugere maior conforto em ambientes com troca frequente, colaboração e contato com outras pessoas.`;
+ const topValues=values.slice(0,4);
+ const motivatorText=topValues.length?`Isso indica que ${topValues.map(([k])=>valueInfo[k]?.measures?.toLowerCase()||String(k).toLowerCase()).join('; ')} podem atuar como fatores relevantes de motivação.`:'Os motivadores devem ser explorados em conversa e observação de situações reais.';
+ const dev:string[]=[];
+ if(Number((r.disc||{}).D||0)<=22)dev.push('fortalecer posicionamento, assertividade e tomada de decisão em situações que exigem rapidez ou informações incompletas');
+ if(Number((r.disc||{}).D||0)>=32)dev.push('equilibrar velocidade de decisão com escuta, consulta e consideração do impacto sobre outras pessoas');
+ if(Number((r.disc||{}).C||0)>=30 || analysis>=60)dev.push('observar quando a busca por análise, segurança ou qualidade começa a atrasar decisões que já têm informação suficiente');
+ if(Number((r.disc||{}).I||0)>=32)dev.push('equilibrar entusiasmo e expressão com escuta ativa, objetividade e confirmação de entendimento');
+ if(Number((r.disc||{}).I||0)<=22 || intro>=60)dev.push('praticar exposição de ideias e posicionamento em situações em que sua contribuição precisa aparecer com mais clareza');
+ if(Number((r.disc||{}).S||0)>=30 || routine>=60)dev.push('ampliar tolerância a mudanças de prioridade, experimentando pequenas adaptações antes que o cenário esteja totalmente previsível');
+ if(cooperation>=60)dev.push('preservar a cooperação sem evitar conversas difíceis ou assumir responsabilidades que pertencem a outras pessoas');
+ const uniqueDev=[...new Set(dev)].slice(0,3);
+ if(!uniqueDev.length)uniqueDev.push('observar quais comportamentos funcionam bem no contexto atual e quais precisam ser ajustados quando o ambiente muda');
+ const conclusion=`O perfil indica uma pessoa com tendência a ${profileMap[primary]||discInfo[primary]?.name||primary}${secondary?` e também a ${profileMap[secondary]||discInfo[secondary]?.name||secondary}`:''}. ${firstName} tende a funcionar melhor quando o contexto oferece ${autonomy>=55?'autonomia compatível com a responsabilidade':'clareza sobre expectativas'}${analysis>=55?', espaço para analisar informações':''}${cooperation>=55?', relações colaborativas':''}${routine>=55?', alguma previsibilidade de rotina':''}.`;
+ let html=`<div class="box"><h2>1. Síntese do perfil</h2><p>${summaryText}</p></div>`;
+ html+=`<div class="box"><h2>2. Principais características observadas</h2><p>A avaliação sugere tendência a:</p><ul>${bullets.map(x=>`<li>${escapeHtml(x)};</li>`).join('')}</ul><p>A dimensão menos presente foi <b>${discInfo[String(disc[disc.length-1]?.[0]||'')]?.name||disc[disc.length-1]?.[0]||'-'}</b>, o que pode indicar maior tendência a ${lowMap[String(disc[disc.length-1]?.[0]||'')]||'usar o comportamento complementar com menor frequência'}.</p></div>`;
+ html+=`<div class="box"><h2>3. Comunicação</h2><p>O estilo de comunicação foi classificado como <b>${commLabel}</b>, com <b>${Math.round(intro)}% de introversão</b> e <b>${Math.round(ext)}% de extroversão</b>.</p><p>${commText}</p></div>`;
+ html+=`<div class="box"><h2>4. Ambiente de trabalho</h2><p>A avaliação mostra maior preferência por:</p><ul>${workLines.join('')}</ul><p>${workInterpretation}</p></div>`;
+ html+=`<div class="box"><h2>5. Motivadores</h2><p>Os valores aparecem com maior presença de:</p><ul>${topValues.map(([k,v])=>`<li>${escapeHtml(String(k))}: ${Math.round(Number(v))}%</li>`).join('')}</ul><p>${escapeHtml(motivatorText)}</p></div>`;
+ html+=`<div class="box"><h2>6. Pontos de desenvolvimento</h2><p>Alguns aspectos que podem ser observados e desenvolvidos, conforme as demandas reais do contexto:</p><ul>${uniqueDev.map(x=>`<li>${escapeHtml(x)}.</li>`).join('')}</ul></div>`;
+ html+=`<div class="box"><h2>7. Conclusão</h2><p>${conclusion}</p><p>Os resultados devem ser utilizados como ferramenta de desenvolvimento e autoconhecimento, e não como definição fixa de personalidade. As tendências devem ser comparadas com comportamentos observados no dia a dia e com as exigências reais da função.</p></div>`;
+ return html;
+}
+
 function behaviorDetailedRows(r:any,mode:'manager'|'personal'){
  if(!r)return'';
  const disc=Object.entries(r.disc||{}).sort((a:any,b:any)=>Number(b[1])-Number(a[1]));

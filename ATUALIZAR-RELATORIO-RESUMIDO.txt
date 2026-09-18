@@ -1,0 +1,28 @@
+ATUALIZACAO - RELATORIO RESUMIDO DO PERFIL COMPORTAMENTAL
+Data: 18/09/2026
+
+O que foi incluido
+- Novo botao "Resumo" para avaliacoes comportamentais concluidas.
+- Mantidos os botoes "Gerencial" e "Pessoal".
+- Relatorio resumido automatico com 7 secoes:
+  1. Sintese do perfil
+  2. Principais caracteristicas observadas
+  3. Comunicacao
+  4. Ambiente de trabalho
+  5. Motivadores
+  6. Pontos de desenvolvimento
+  7. Conclusao
+- O texto cruza DISC, comunicacao, preferencias de ambiente e valores.
+- A linguagem muda de acordo com as combinacoes de resultados, evitando apenas trocar percentuais em um texto fixo.
+- Inclui aviso de que o resultado nao e diagnostico nem definicao fixa de personalidade.
+
+Banco de dados
+- Nao exige nova migration no Supabase.
+
+Como publicar
+1. Copie todo o conteudo desta pasta sobre o repositorio local perfil-comportamental-sueli.
+2. No GitHub Desktop, revise Changes.
+3. Summary sugerido: Adiciona relatorio resumido comportamental
+4. Commit to main.
+5. Push origin.
+6. Aguarde o Vercel ficar Ready.

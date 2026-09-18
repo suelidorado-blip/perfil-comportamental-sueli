@@ -91,3 +91,12 @@ Avaliacoes comportamentais concluidas agora oferecem tres leituras: Resumo, Gere
 
 ## Atualização 0.5.0 - Relatórios visuais
 Relatórios com páginas separadas, gráficos coloridos e cores DISC padronizadas (D vermelho, I amarelo, S verde, C azul). Não requer migration no Supabase.
+
+
+## Atualização - relatórios A4 retrato e ações de PDF/impressão
+- Todos os relatórios (Resumo, Gerencial, Pessoal e Vocacional) usam A4 em orientação retrato no modo de impressão.
+- Cada bloco principal é separado por página para preservar a leitura e evitar cortes.
+- Todos os relatórios exibem dois botões: **Salvar em PDF** e **Imprimir**.
+- O botão **Salvar em PDF** abre a janela de impressão já com o nome do relatório preparado; selecione **Salvar como PDF** no navegador.
+- O botão **Imprimir** abre a mesma janela para envio à impressora física.
+- Os botões não aparecem no PDF nem na impressão.

@@ -1,0 +1,18 @@
+ATUALIZAÇÃO: RELATÓRIOS A4 RETRATO + PDF + IMPRESSÃO
+
+1. Copie todo o conteúdo desta pasta para o repositório perfil-comportamental-sueli.
+2. Substitua os arquivos existentes.
+3. GitHub Desktop: Commit to main.
+   Sugestão: Relatórios A4 retrato com PDF e impressão
+4. Push origin.
+5. Aguarde o Vercel ficar Ready.
+
+Não é necessário executar SQL no Supabase.
+
+Aplica-se a TODOS os relatórios:
+- Resumo comportamental
+- Gerencial
+- Desenvolvimento pessoal
+- Vocacional
+
+Os relatórios são formatados em A4 retrato e exibem botões separados para Salvar em PDF e Imprimir.

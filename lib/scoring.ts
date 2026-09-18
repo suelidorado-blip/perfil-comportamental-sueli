@@ -11,14 +11,17 @@ function pairPercent(left:number,right:number){
 }
 
 export function scoreBehavioral(ans:Record<string,string>){
-  const discRaw={
-    D:avg(ans,['d1','d2','d3','d4','d5','d6']),
-    I:avg(ans,['i1','i2','i3','i4','i5','i6']),
-    S:avg(ans,['s1','s2','s3','s4','s5','s6']),
-    C:avg(ans,['c1','c2','c3','c4','c5','c6'])
-  };
-  const disc=normalizeShares(discRaw);
-  const discSorted=Object.entries(disc).sort((a,b)=>Number(b[1])-Number(a[1]));
+  // DISC v3 - escolha forcada: 24 blocos, uma unica escolha por bloco.
+  const discRaw={D:0,I:0,S:0,C:0};
+  for(let i=1;i<=24;i++){
+    const v=String(ans[`disc${i}`]||'');
+    if(v==='D'||v==='I'||v==='S'||v==='C')discRaw[v]+=1;
+  }
+  const totalDisc=Object.values(discRaw).reduce((a,b)=>a+b,0)||24;
+  const disc=Object.fromEntries(Object.entries(discRaw).map(([k,v])=>[k,Math.round((v/totalDisc)*1000)/10]));
+  const discSorted=Object.entries(discRaw).sort((a,b)=>Number(b[1])-Number(a[1]));
+  const leadGap=Number(discSorted[0]?.[1]||0)-Number(discSorted[1]?.[1]||0);
+  const discPattern=leadGap<=1?'equilibrado':leadGap<=3?'predominancia_moderada':'predominancia_clara';
 
   const extroversionRaw=avg(ans,['social1','social3','social5','social7','social9']);
   const introversionRaw=avg(ans,['social2','social4','social6','social8','social10']);
@@ -50,11 +53,14 @@ export function scoreBehavioral(ans:Record<string,string>){
   };
 
   return {
-    version:2,
+    version:3,
+    discMethod:'Escolha forcada - 24 blocos, uma frase por bloco',
     disc,
     discRaw,
     discPrimary:discSorted[0]?.[0]||'',
     discSecondary:discSorted[1]?.[0]||'',
+    discLeadGap:leadGap,
+    discPattern,
     communication,
     values,
     valuesRaw,

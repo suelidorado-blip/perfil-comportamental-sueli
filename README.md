@@ -103,3 +103,14 @@ Relatórios com páginas separadas, gráficos coloridos e cores DISC padronizada
 
 ## Atualizacao - valores e motivadores detalhados
 Os relatorios comportamentais agora explicam cada valor com significado, manifestacao no dia a dia, motivadores, pontos de atencao e leitura integrada de valores proximos.
+
+
+## DISC v3 - escolha forcada
+- O bloco DISC usa 24 blocos com 4 frases cada.
+- Em cada bloco o participante escolhe somente uma frase: D, I, S ou C.
+- Cada escolha soma 1 ponto ao respectivo fator. O total do DISC e sempre 24 pontos.
+- Diferenca de 0-1 ponto entre primeiro e segundo: perfil equilibrado/combinado.
+- Diferenca de 2-3 pontos: predominancia moderada.
+- Diferenca de 4+ pontos: predominancia mais clara.
+- Avaliacoes antigas continuam preservadas com o resultado calculado na versao anterior.
+- Esta ferramenta e autoral e baseada nas dimensoes DISC; nao e um teste psicologico validado.

@@ -1,0 +1,40 @@
+ATUALIZACAO DO TESTE VOCACIONAL
+
+Esta versao amplia somente o Teste Vocacional. O Perfil Comportamental permanece separado.
+
+NOVO TESTE VOCACIONAL - 62 PERGUNTAS
+1. Interesses profissionais RIASEC - 30
+2. Preferencias de trabalho - 10
+3. Habilidades percebidas - 12
+4. Valores de carreira - 10
+
+RELATORIO
+- mapa percentual RIASEC
+- codigo das 3 areas predominantes
+- explicacao de cada area
+- preferencias de trabalho
+- habilidades percebidas
+- valores de carreira
+- cruzamento interesse x habilidade
+- familias profissionais para investigar
+- cursos e formacoes para explorar
+- ambiente profissional
+- perguntas de reflexao
+- proximos passos
+
+ATUALIZACAO NO GITHUB
+1. Extraia este ZIP.
+2. No GitHub Desktop, abra o repositorio perfil-comportamental-sueli.
+3. Clique em Show in Explorer.
+4. Copie todo o conteudo deste ZIP para a pasta do repositorio e substitua os arquivos existentes.
+5. Volte ao GitHub Desktop.
+6. Summary: Amplia teste vocacional
+7. Commit to main.
+8. Push origin.
+9. O Vercel fara o deploy automaticamente.
+
+SUPABASE
+Se a migration v2 do teste comportamental ja foi executada e existe a coluna respondent_name, nao ha SQL novo para executar. As respostas e os resultados vocacionais usam os campos JSON ja existentes.
+
+OBSERVACAO
+Relatorios de testes vocacionais antigos continuam preservados e sao identificados como resultado de versao anterior.

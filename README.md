@@ -60,3 +60,27 @@ Se o seu banco Supabase ja existe, rode no SQL Editor:
 `supabase/migration-v2-blocos.sql`
 
 Depois envie os arquivos atualizados ao GitHub e faca push. O Vercel fara novo deploy automaticamente.
+
+## Atualizacao v3 - teste vocacional ampliado
+
+O Teste Vocacional foi ampliado para 62 perguntas em quatro etapas:
+1. Interesses profissionais RIASEC - 30 perguntas
+2. Preferencias de trabalho - 10 perguntas
+3. Habilidades percebidas - 12 perguntas
+4. Valores de carreira - 10 perguntas
+
+O relatorio vocacional agora apresenta:
+- mapa percentual RIASEC e codigo das tres areas predominantes;
+- explicacao das seis areas de interesse;
+- preferencias de ambiente e rotina de trabalho;
+- habilidades percebidas;
+- valores de carreira;
+- cruzamento entre interesse e habilidade percebida;
+- familias profissionais e cursos para investigar;
+- ambientes de trabalho a explorar;
+- perguntas de reflexao e proximos passos.
+
+O teste vocacional tambem solicita o nome completo na entrada do link.
+
+### Banco de dados
+Se voce ja executou a migration v2 e possui a coluna `respondent_name`, esta atualizacao nao exige nova migration do Supabase. As novas respostas e resultados continuam sendo armazenados nos campos JSON existentes.

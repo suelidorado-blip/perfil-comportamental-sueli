@@ -9,22 +9,30 @@ const behavioralBlocks=[
   {kind:'work',title:'Preferencias no Ambiente de Trabalho',subtitle:'Quais condicoes tendem a facilitar conforto, foco e desempenho.'}
 ] as const;
 
+const vocationalBlocks=[
+  {kind:'vocational_interest',title:'Interesses Profissionais',subtitle:'Atividades e temas que naturalmente despertam sua curiosidade ou vontade de participar.'},
+  {kind:'vocational_preference',title:'Preferencias de Trabalho',subtitle:'Condicoes de ambiente e rotina que tendem a combinar melhor com voce.'},
+  {kind:'vocational_skill',title:'Habilidades Percebidas',subtitle:'Areas em que voce percebe maior facilidade hoje. Nao e uma prova de capacidade.'},
+  {kind:'vocational_value',title:'Valores de Carreira',subtitle:'O que pesa mais para voce ao imaginar uma carreira satisfatoria.'}
+] as const;
+
 export default function TestClient({assessment}:{assessment:any}){
   const isBehavioral=assessment.type==='behavioral';
+  const blocks=isBehavioral?behavioralBlocks:vocationalBlocks;
+  const questions=isBehavioral?behavioralQuestions:vocationalQuestions;
   const [answers,setAnswers]=useState<Record<string,string>>({});
   const [sending,setSending]=useState(false);
   const [done,setDone]=useState(false);
   const [respondentName,setRespondentName]=useState('');
-  const [started,setStarted]=useState(!isBehavioral);
+  const [started,setStarted]=useState(false);
   const [step,setStep]=useState(0);
 
   const currentQuestions=useMemo<Q[]>(()=>{
-    if(!isBehavioral)return vocationalQuestions;
-    const block=behavioralBlocks[step];
-    return behavioralQuestions.filter(q=>q.kind===block.kind);
-  },[isBehavioral,step]);
+    const block=blocks[step];
+    return questions.filter(q=>q.kind===block.kind);
+  },[questions,blocks,step]);
 
-  const total=isBehavioral?behavioralQuestions.length:vocationalQuestions.length;
+  const total=questions.length;
   const answered=Object.keys(answers).length;
   const progress=Math.round((answered/total)*100);
 
@@ -37,33 +45,31 @@ export default function TestClient({assessment}:{assessment:any}){
   function nextBlock(){
     const missing=currentQuestions.some(q=>!answers[q.id]);
     if(missing){alert('Responda todas as perguntas deste bloco antes de continuar.');return}
-    if(step<behavioralBlocks.length-1){setStep(s=>s+1);window.scrollTo({top:0,behavior:'smooth'});}
+    if(step<blocks.length-1){setStep(s=>s+1);window.scrollTo({top:0,behavior:'smooth'});}
   }
 
   async function submit(e:React.FormEvent){
     e.preventDefault();
-    const qs=isBehavioral?behavioralQuestions:vocationalQuestions;
-    if(Object.keys(answers).length!==qs.length){alert('Responda todas as perguntas antes de finalizar.');return}
-    if(isBehavioral&&respondentName.trim().length<3){alert('Informe seu nome completo.');return}
+    if(Object.keys(answers).length!==questions.length){alert('Responda todas as perguntas antes de finalizar.');return}
+    if(respondentName.trim().length<3){alert('Informe seu nome completo.');return}
     setSending(true);
-    const r=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:assessment.token,answers,respondent_name:isBehavioral?respondentName.trim():assessment.participant_name})});
+    const r=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:assessment.token,answers,respondent_name:respondentName.trim()})});
     setSending(false);
     if(r.ok)setDone(true);else alert((await r.json()).error||'Nao foi possivel enviar.');
   }
 
   if(done)return <main className="container" style={{maxWidth:760}}><div className="card"><h1>Respostas enviadas</h1><p>Obrigado. Sua avaliacao foi concluida e o responsavel ja podera consultar o resultado.</p></div></main>;
 
-  if(isBehavioral&&!started)return <main className="container" style={{maxWidth:680}}><div className="card"><div className="brand">Perfil Comportamental</div><h1>Antes de comecar</h1><p className="muted">Este link e individual e pode ser respondido apenas uma vez. Responda considerando como voce costuma agir naturalmente, e nao como acredita que deveria agir.</p><form onSubmit={startAssessment}><label className="label">Seu nome completo</label><input className="input" autoFocus required value={respondentName} onChange={e=>setRespondentName(e.target.value)} placeholder="Digite seu nome completo"/><button className="btn btn-primary" style={{marginTop:18}}>Comecar avaliacao</button></form></div></main>;
+  if(!started)return <main className="container" style={{maxWidth:680}}><div className="card"><div className="brand">{isBehavioral?'Perfil Comportamental':'Teste Vocacional'}</div><h1>Antes de comecar</h1><p className="muted">Este link e individual e pode ser respondido apenas uma vez. Responda com sinceridade, considerando suas preferencias reais e nao o que parece ser a resposta mais adequada.</p><form onSubmit={startAssessment}><label className="label">Seu nome completo</label><input className="input" autoFocus required value={respondentName} onChange={e=>setRespondentName(e.target.value)} placeholder="Digite seu nome completo"/><button className="btn btn-primary" style={{marginTop:18}}>Comecar avaliacao</button></form></div></main>;
 
-  if(!isBehavioral)return <main className="container" style={{maxWidth:860}}><div className="card" style={{marginBottom:18}}><div className="brand">Teste Vocacional</div><h1>{assessment.participant_name}</h1>{assessment.context&&<p className="muted">{assessment.context}</p>}<p className="muted">Use a escala de 1 a 5, em que 1 significa pouco parecido com voce e 5 significa muito parecido com voce.</p></div><form onSubmit={submit} className="grid">{currentQuestions.map((q,i)=><Question key={q.id} q={q} i={i} answers={answers} setAnswers={setAnswers}/>)}<button className="btn btn-primary" disabled={sending}>{sending?'Enviando...':'Finalizar avaliacao'}</button></form></main>;
-
-  const block=behavioralBlocks[step];
-  const isLast=step===behavioralBlocks.length-1;
+  const block=blocks[step];
+  const isLast=step===blocks.length-1;
+  const scaleHelp=isBehavioral?'1 = pouco parecido comigo, 5 = muito parecido comigo.':step===0?'1 = nao gostaria / nao me atrai, 5 = gostaria muito / me atrai bastante.':'1 = pouco, 5 = muito.';
   return <main className="container" style={{maxWidth:900}}>
     <div className="card" style={{marginBottom:18}}>
-      <div style={{display:'flex',justifyContent:'space-between',gap:12,alignItems:'center',flexWrap:'wrap'}}><div><div className="brand">Perfil Comportamental</div><h1 style={{marginBottom:4}}>{block.title}</h1><p className="muted" style={{marginTop:0}}>{block.subtitle}</p></div><div className="badge">Etapa {step+1} de {behavioralBlocks.length}</div></div>
+      <div style={{display:'flex',justifyContent:'space-between',gap:12,alignItems:'center',flexWrap:'wrap'}}><div><div className="brand">{isBehavioral?'Perfil Comportamental':'Teste Vocacional'}</div><h1 style={{marginBottom:4}}>{block.title}</h1><p className="muted" style={{marginTop:0}}>{block.subtitle}</p></div><div className="badge">Etapa {step+1} de {blocks.length}</div></div>
       <div style={{height:9,background:'#e5e7eb',borderRadius:999,overflow:'hidden',marginTop:12}}><div style={{height:'100%',width:`${progress}%`,background:'#243a5a'}}/></div>
-      <p className="muted" style={{fontSize:13}}>{progress}% concluido · Escala de 1 a 5: 1 = pouco parecido comigo, 5 = muito parecido comigo.</p>
+      <p className="muted" style={{fontSize:13}}>{progress}% concluido · Escala de 1 a 5: {scaleHelp}</p>
     </div>
     <form onSubmit={submit} className="grid">
       {currentQuestions.map((q,i)=><Question key={q.id} q={q} i={i} answers={answers} setAnswers={setAnswers}/>)}

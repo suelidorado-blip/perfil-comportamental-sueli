@@ -1,7 +1,7 @@
 export type Q={
   id:string;
   text:string;
-  kind:'disc'|'social'|'value'|'work'|'vocational';
+  kind:'disc'|'social'|'value'|'work'|'vocational_interest'|'vocational_preference'|'vocational_skill'|'vocational_value';
   options:{label:string,value:string}[];
 };
 
@@ -82,10 +82,81 @@ export const behavioralQuestions:Q[]=[
 ];
 
 export const vocationalQuestions:Q[]=[
-['r1','Gosto de atividades praticas, ferramentas, montagem ou execucao concreta.','pratico'],['r2','Aprendo melhor fazendo e testando na pratica.','pratico'],['r3','Sinto satisfacao ao ver um resultado fisico e concreto do meu trabalho.','pratico'],['r4','Tenho interesse por atividades tecnicas ou operacionais.','pratico'],['r5','Prefiro problemas que possam ser resolvidos com acao pratica.','pratico'],
-['i1','Gosto de investigar causas, padroes e explicacoes.','investigativo'],['i2','Tenho interesse por pesquisa, analise e raciocinio logico.','investigativo'],['i3','Costumo aprofundar assuntos antes de formar uma opiniao.','investigativo'],['i4','Gosto de resolver problemas complexos.','investigativo'],['i5','Sinto curiosidade por ciencia, dados ou tecnologia.','investigativo'],
-['a1','Gosto de criar ideias, imagens, textos ou solucoes originais.','criativo'],['a2','Sinto-me atraido por atividades com liberdade de expressao.','criativo'],['a3','Tenho prazer em imaginar novas possibilidades.','criativo'],['a4','Prefiro ambientes onde posso experimentar formas diferentes de fazer.','criativo'],['a5','Tenho interesse por design, comunicacao, arte ou criacao.','criativo'],
-['s1','Gosto de ajudar, orientar ou ensinar pessoas.','social'],['s2','Tenho interesse em compreender necessidades humanas.','social'],['s3','Sinto satisfacao quando meu trabalho melhora a vida de alguem.','social'],['s4','Tenho paciencia para ouvir e apoiar pessoas.','social'],['s5','Prefiro trabalhos com interacao humana significativa.','social'],
-['e1','Gosto de persuadir, negociar ou apresentar ideias.','empreendedor'],['e2','Sinto-me confortavel assumindo lideranca.','empreendedor'],['e3','Tenho interesse por negocios, vendas ou gestao.','empreendedor'],['e4','Metas e desafios competitivos costumam me estimular.','empreendedor'],['e5','Gosto de mobilizar pessoas em torno de uma ideia.','empreendedor'],
-['o1','Gosto de organizar informacoes, documentos ou processos.','organizacional'],['o2','Sinto-me bem trabalhando com planejamento e controle.','organizacional'],['o3','Tenho atencao para rotinas, prazos e detalhes.','organizacional'],['o4','Prefiro ambientes com regras e responsabilidades claras.','organizacional'],['o5','Gosto de manter informacoes e tarefas bem estruturadas.','organizacional']
-].map(([id,text,value])=>({id,kind:'vocational' as const,text,options:scale.map(x=>({...x,value:`${value}:${x.value}`}))}));
+  // BLOCO 1 - Interesses RIASEC: 30 perguntas, 5 por dimensao.
+  ...[
+    ['vr1','Gosto de atividades em que posso montar, ajustar, operar ou produzir algo concreto.','realista'],
+    ['vr2','Tenho interesse por ferramentas, equipamentos, mecanismos ou atividades tecnicas.','realista'],
+    ['vr3','Aprendo com facilidade quando posso experimentar e fazer na pratica.','realista'],
+    ['vr4','Sinto satisfacao ao resolver problemas concretos com uma solucao funcional.','realista'],
+    ['vr5','Eu me imagino trabalhando em atividades que envolvam execucao, campo, operacao ou construcao.','realista'],
+    ['vi1','Gosto de investigar causas, entender padroes e buscar explicacoes.','investigativo'],
+    ['vi2','Problemas complexos me despertam curiosidade em vez de me afastar.','investigativo'],
+    ['vi3','Tenho interesse por pesquisa, dados, ciencia, tecnologia ou analise.','investigativo'],
+    ['vi4','Gosto de comparar informacoes antes de chegar a uma conclusao.','investigativo'],
+    ['vi5','Sinto satisfacao quando descubro como ou por que algo acontece.','investigativo'],
+    ['va1','Gosto de criar textos, imagens, conceitos, experiencias ou ideias originais.','artistico'],
+    ['va2','Tenho interesse por comunicacao, design, arte, conteudo ou expressao criativa.','artistico'],
+    ['va3','Prefiro atividades em que existe espaco para imaginar possibilidades diferentes.','artistico'],
+    ['va4','Sinto satisfacao ao transformar uma ideia em algo expressivo ou visualmente interessante.','artistico'],
+    ['va5','Ambientes muito rigidos, sem espaco para criacao, tendem a reduzir meu interesse.','artistico'],
+    ['vs1','Gosto de orientar, ensinar, apoiar ou desenvolver pessoas.','social'],
+    ['vs2','Tenho interesse em compreender necessidades, sentimentos e comportamentos humanos.','social'],
+    ['vs3','Sinto satisfacao quando meu trabalho ajuda alguem a evoluir ou resolver um problema.','social'],
+    ['vs4','Tenho paciencia para ouvir, explicar e acompanhar pessoas.','social'],
+    ['vs5','Eu me imagino em uma profissao com interacao humana significativa.','social'],
+    ['ve1','Gosto de negociar, persuadir, apresentar ideias ou defender propostas.','empreendedor'],
+    ['ve2','Sinto-me estimulado por metas, oportunidades e desafios de negocio.','empreendedor'],
+    ['ve3','Tenho interesse por lideranca, vendas, gestao ou empreendedorismo.','empreendedor'],
+    ['ve4','Gosto de mobilizar pessoas em torno de uma ideia ou objetivo.','empreendedor'],
+    ['ve5','Assumir responsabilidade por decisoes e resultados me atrai.','empreendedor'],
+    ['vc1','Gosto de organizar dados, documentos, agendas, controles ou processos.','convencional'],
+    ['vc2','Sinto-me confortavel com planejamento, prazos e procedimentos claros.','convencional'],
+    ['vc3','Tenho facilidade para manter informacoes e tarefas bem estruturadas.','convencional'],
+    ['vc4','Atividades que exigem precisao, conferencia e acompanhamento podem ser satisfatorias para mim.','convencional'],
+    ['vc5','Gosto de transformar desorganizacao em um processo claro e controlado.','convencional']
+  ].map(([id,text,value])=>({id,kind:'vocational_interest' as const,text,options:scale.map(x=>({...x,value:`interest:${value}:${x.value}`}))})),
+
+  // BLOCO 2 - Preferencias de trabalho: 10 perguntas, 5 continuos.
+  ...[
+    ['vp_people','Prefiro atividades com contato frequente, conversa e relacionamento com pessoas.','people'],
+    ['vp_backstage','Prefiro produzir, analisar ou executar com mais tempo de concentracao e menos exposicao.','backstage'],
+    ['vp_creative','Sinto-me melhor quando tenho liberdade para criar caminhos, ideias ou solucoes.','creative'],
+    ['vp_structure','Sinto-me melhor quando existem processos, criterios e orientacoes bem definidos.','structure'],
+    ['vp_variety','Variedade, mudancas e novos desafios aumentam meu interesse pelo trabalho.','variety'],
+    ['vp_routine','Rotina previsivel e continuidade ajudam a manter meu desempenho.','routine'],
+    ['vp_autonomy','Prefiro receber o objetivo e ter autonomia para definir como executa-lo.','autonomy'],
+    ['vp_guidance','Prefiro ter direcionamento, referencias e acompanhamento mais frequentes.','guidance'],
+    ['vp_team','Gosto de construir resultados em equipe e trocar ideias durante o processo.','team'],
+    ['vp_individual','Gosto de ter espaco para produzir individualmente e me concentrar sem muitas interrupcoes.','individual']
+  ].map(([id,text,value])=>({id,kind:'vocational_preference' as const,text,options:scale.map(x=>({...x,value:`preference:${value}:${x.value}`}))})),
+
+  // BLOCO 3 - Habilidades percebidas: 12 perguntas, 2 por dimensao.
+  ...[
+    ['vh_practical_1','Tenho facilidade para aprender procedimentos praticos e executa-los com seguranca.','practical'],
+    ['vh_practical_2','Costumo encontrar solucoes praticas para problemas do dia a dia.','practical'],
+    ['vh_analytical_1','Tenho facilidade para analisar informacoes, comparar alternativas e perceber padroes.','analytical'],
+    ['vh_analytical_2','Consigo manter concentracao ao resolver problemas que exigem raciocinio.','analytical'],
+    ['vh_creative_1','Tenho facilidade para gerar ideias, alternativas ou formas diferentes de apresentar algo.','creative'],
+    ['vh_creative_2','Costumo perceber possibilidades que outras pessoas ainda nao consideraram.','creative'],
+    ['vh_interpersonal_1','Tenho facilidade para ouvir, explicar e criar conexao com diferentes pessoas.','interpersonal'],
+    ['vh_interpersonal_2','As pessoas costumam me procurar para conversar, pedir ajuda ou orientacao.','interpersonal'],
+    ['vh_influence_1','Tenho facilidade para apresentar ideias de forma convincente.','influence'],
+    ['vh_influence_2','Consigo assumir a frente e mobilizar pessoas quando necessario.','influence'],
+    ['vh_organization_1','Tenho facilidade para organizar tarefas, informacoes, prazos e prioridades.','organization'],
+    ['vh_organization_2','Consigo acompanhar detalhes e manter controle de varias demandas.','organization']
+  ].map(([id,text,value])=>({id,kind:'vocational_skill' as const,text,options:scale.map(x=>({...x,value:`skill:${value}:${x.value}`}))})),
+
+  // BLOCO 4 - Valores de carreira: 10 indicadores.
+  ...[
+    ['vv_stability','Ter seguranca e estabilidade profissional e importante para minhas escolhas.','stability'],
+    ['vv_income','Potencial de remuneracao e crescimento financeiro pesa bastante para mim.','income'],
+    ['vv_purpose','Preciso perceber sentido e proposito no trabalho que realizo.','purpose'],
+    ['vv_recognition','Ser reconhecido por resultados e competencias e importante para minha motivacao.','recognition'],
+    ['vv_autonomy','Ter liberdade para decidir e organizar meu trabalho e importante para mim.','autonomy'],
+    ['vv_creativity','Poder criar, experimentar e propor ideias aumenta meu interesse por uma carreira.','creativity'],
+    ['vv_learning','Quero uma carreira que me permita aprender continuamente e ampliar conhecimentos.','learning'],
+    ['vv_leadership','Ter oportunidade de liderar, influenciar ou assumir responsabilidades me atrai.','leadership'],
+    ['vv_balance','Equilibrio entre trabalho, vida pessoal e bem-estar e uma prioridade para mim.','balance'],
+    ['vv_impact','Quero perceber que meu trabalho produz impacto positivo em pessoas ou na sociedade.','impact']
+  ].map(([id,text,value])=>({id,kind:'vocational_value' as const,text,options:scale.map(x=>({...x,value:`career_value:${value}:${x.value}`}))}))
+];

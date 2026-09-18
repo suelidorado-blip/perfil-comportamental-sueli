@@ -64,7 +64,75 @@ export function scoreBehavioral(ans:Record<string,string>){
 }
 
 export function scoreVocational(ans:Record<string,string>){
-  const totals:Record<string,number>={pratico:0,investigativo:0,criativo:0,social:0,empreendedor:0,organizacional:0};
-  Object.values(ans).forEach(v=>{const [k,n]=String(v).split(':');if(k in totals)totals[k]+=Number(n)});
-  return totals;
+  function percentFromScale(values:number[]){
+    if(!values.length)return 0;
+    const mean=values.reduce((a,b)=>a+b,0)/values.length;
+    return Math.round(((mean-1)/4)*100);
+  }
+  function collect(prefix:string,key:string){
+    const nums:number[]=[];
+    Object.values(ans).forEach(v=>{
+      const parts=String(v).split(':');
+      if(parts[0]===prefix&&parts[1]===key)nums.push(Number(parts[2]||0));
+    });
+    return nums;
+  }
+  const interests={
+    realista:percentFromScale(collect('interest','realista')),
+    investigativo:percentFromScale(collect('interest','investigativo')),
+    artistico:percentFromScale(collect('interest','artistico')),
+    social:percentFromScale(collect('interest','social')),
+    empreendedor:percentFromScale(collect('interest','empreendedor')),
+    convencional:percentFromScale(collect('interest','convencional'))
+  };
+  const letters:Record<string,string>={realista:'R',investigativo:'I',artistico:'A',social:'S',empreendedor:'E',convencional:'C'};
+  const sortedInterests=Object.entries(interests).sort((a,b)=>b[1]-a[1]);
+  const topInterests=sortedInterests.slice(0,3).map(([k])=>k);
+
+  const prefRaw:Record<string,number>={};
+  ['people','backstage','creative','structure','variety','routine','autonomy','guidance','team','individual'].forEach(k=>{
+    const a=collect('preference',k); prefRaw[k]=a[0]||0;
+  });
+  const preferences={
+    pessoas_bastidores:{labels:['Contato com pessoas','Bastidores / concentracao'],...pairPercent(prefRaw.people,prefRaw.backstage)},
+    criatividade_estrutura:{labels:['Criatividade / liberdade','Estrutura / processos'],...pairPercent(prefRaw.creative,prefRaw.structure)},
+    variedade_rotina:{labels:['Variedade / mudanca','Rotina / continuidade'],...pairPercent(prefRaw.variety,prefRaw.routine)},
+    autonomia_direcionamento:{labels:['Autonomia','Direcionamento'],...pairPercent(prefRaw.autonomy,prefRaw.guidance)},
+    equipe_individual:{labels:['Trabalho em equipe','Trabalho individual'],...pairPercent(prefRaw.team,prefRaw.individual)}
+  };
+
+  const skills={
+    practical:percentFromScale(collect('skill','practical')),
+    analytical:percentFromScale(collect('skill','analytical')),
+    creative:percentFromScale(collect('skill','creative')),
+    interpersonal:percentFromScale(collect('skill','interpersonal')),
+    influence:percentFromScale(collect('skill','influence')),
+    organization:percentFromScale(collect('skill','organization'))
+  };
+
+  const careerValues={
+    stability:percentFromScale(collect('career_value','stability')),
+    income:percentFromScale(collect('career_value','income')),
+    purpose:percentFromScale(collect('career_value','purpose')),
+    recognition:percentFromScale(collect('career_value','recognition')),
+    autonomy:percentFromScale(collect('career_value','autonomy')),
+    creativity:percentFromScale(collect('career_value','creativity')),
+    learning:percentFromScale(collect('career_value','learning')),
+    leadership:percentFromScale(collect('career_value','leadership')),
+    balance:percentFromScale(collect('career_value','balance')),
+    impact:percentFromScale(collect('career_value','impact'))
+  };
+  const topCareerValues=Object.entries(careerValues).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k])=>k);
+
+  return {
+    version:2,
+    model:'RIASEC ampliado - perguntas autorais',
+    interests,
+    topInterests,
+    riasecCode:topInterests.map(k=>letters[k]).join(''),
+    preferences,
+    skills,
+    careerValues,
+    topCareerValues
+  };
 }

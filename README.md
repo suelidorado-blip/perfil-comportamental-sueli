@@ -87,3 +87,7 @@ Se voce ja executou a migration v2 e possui a coluna `respondent_name`, esta atu
 
 ## Atualizacao 18/09/2026 - Relatorio resumido
 Avaliacoes comportamentais concluidas agora oferecem tres leituras: Resumo, Gerencial e Pessoal. O Resumo gera automaticamente uma leitura integrada em sete secoes, cruzando DISC, comunicacao, ambiente de trabalho e motivadores.
+
+
+## Atualização 0.5.0 - Relatórios visuais
+Relatórios com páginas separadas, gráficos coloridos e cores DISC padronizadas (D vermelho, I amarelo, S verde, C azul). Não requer migration no Supabase.

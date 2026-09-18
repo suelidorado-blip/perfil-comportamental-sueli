@@ -1,0 +1,25 @@
+ATUALIZAÇÃO - RELATÓRIOS VISUAIS
+
+Esta versão mantém banco de dados e perguntas sem alteração.
+
+Principais mudanças:
+- Capa moderna para relatórios.
+- Uma seção de análise por página na impressão/PDF.
+- DISC com cores padronizadas:
+  D - Dominante: vermelho
+  I - Influente: amarelo
+  S - Estável: verde
+  C - Conforme: azul
+- Cards e composição visual DISC.
+- Gráficos coloridos de comunicação, valores, ambiente e vocacional.
+- Melhor leitura em tela e no PDF.
+- Botão Salvar / Imprimir PDF preservado.
+
+Para atualizar:
+1. Copie todos os arquivos desta pasta para o repositório local atual.
+2. Substitua os arquivos existentes.
+3. GitHub Desktop: Commit to main.
+4. Push origin.
+5. Aguarde o Vercel ficar Ready.
+
+Não há SQL novo para executar no Supabase.

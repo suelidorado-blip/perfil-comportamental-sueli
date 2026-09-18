@@ -8,129 +8,129 @@ export type Q={
 const scale=[1,2,3,4,5].map(n=>({label:String(n),value:String(n)}));
 
 export const behavioralQuestions:Q[]=[
-  // BLOCO 1 - DISC: 24 blocos de escolha forcada. Em cada bloco, selecione apenas UMA frase.
+  // BLOCO 1 - DISC: 24 blocos de escolha forcada, com foco em comportamento geral.
+  // Em cada bloco, a pessoa seleciona UMA frase que mais combina com seu jeito natural.
   // Cada bloco possui uma alternativa D, I, S e C. A ordem varia para reduzir pistas de resposta.
   {id:'disc1',kind:'disc',text:'Qual destas frases mais combina com você?',options:[
-    {label:'Gosto de assumir a frente e decidir quando algo precisa avançar.',value:'D'},
-    {label:'Gosto de conversar, envolver pessoas e criar entusiasmo.',value:'I'},
-    {label:'Gosto de apoiar, manter constância e preservar um bom clima.',value:'S'},
-    {label:'Gosto de analisar critérios e garantir que tudo esteja correto.',value:'C'}]},
-  {id:'disc2',kind:'disc',text:'Em uma situação nova, qual atitude mais se parece com você?',options:[
-    {label:'Observo o cenário e procuro entender os detalhes antes de agir.',value:'C'},
-    {label:'Busco manter tranquilidade e ajudar as pessoas a se adaptarem.',value:'S'},
-    {label:'Começo a interagir e trocar ideias para criar conexão.',value:'I'},
-    {label:'Tomo iniciativa e procuro colocar as coisas em movimento.',value:'D'}]},
-  {id:'disc3',kind:'disc',text:'Quando surge um desafio, qual reação é mais natural para você?',options:[
-    {label:'Encaro o desafio como uma oportunidade de superar limites.',value:'D'},
-    {label:'Procuro entender o problema, os riscos e os critérios envolvidos.',value:'C'},
-    {label:'Converso com as pessoas e busco mobilizar o grupo.',value:'I'},
-    {label:'Mantenho o ritmo e ajudo a equipe a seguir com estabilidade.',value:'S'}]},
-  {id:'disc4',kind:'disc',text:'Ao trabalhar com outras pessoas, o que mais combina com você?',options:[
-    {label:'Procuro manter cooperação, paciência e continuidade.',value:'S'},
-    {label:'Gosto de trazer energia, proximidade e troca para o grupo.',value:'I'},
-    {label:'Prefiro deixar responsabilidades e padrões bem definidos.',value:'C'},
-    {label:'Costumo direcionar o grupo para decisões e resultados.',value:'D'}]},
-  {id:'disc5',kind:'disc',text:'Quando precisa tomar uma decisão, qual frase mais representa você?',options:[
-    {label:'Decido com objetividade e assumo a responsabilidade pela escolha.',value:'D'},
-    {label:'Considero como a decisão afetará as pessoas e o clima.',value:'S'},
-    {label:'Gosto de ouvir opiniões e discutir possibilidades antes de fechar.',value:'I'},
-    {label:'Quero informações suficientes para reduzir erros e incertezas.',value:'C'}]},
-  {id:'disc6',kind:'disc',text:'O que mais costuma chamar sua atenção em uma tarefa?',options:[
-    {label:'A possibilidade de interagir, apresentar ideias e influenciar.',value:'I'},
-    {label:'A clareza dos padrões, detalhes e qualidade esperada.',value:'C'},
-    {label:'A oportunidade de atingir um objetivo desafiador.',value:'D'},
-    {label:'A possibilidade de realizar algo com continuidade e segurança.',value:'S'}]},
-  {id:'disc7',kind:'disc',text:'Quando os planos mudam de repente, qual tendência mais se aproxima de você?',options:[
-    {label:'Adapto o caminho rapidamente e foco no que precisa ser resolvido.',value:'D'},
-    {label:'Procuro manter o grupo tranquilo e fazer a transição sem rupturas.',value:'S'},
-    {label:'Tento entender o motivo, os impactos e a nova forma correta de fazer.',value:'C'},
-    {label:'Converso com as pessoas e busco tornar a mudança mais leve.',value:'I'}]},
-  {id:'disc8',kind:'disc',text:'Em uma reunião, qual comportamento tende a aparecer mais em você?',options:[
-    {label:'Ouço com atenção e procuro construir consenso.',value:'S'},
-    {label:'Faço perguntas para esclarecer dados, critérios e riscos.',value:'C'},
-    {label:'Expresso ideias com entusiasmo e estimulo a participação.',value:'I'},
-    {label:'Procuro chegar rapidamente a uma decisão e definir próximos passos.',value:'D'}]},
-  {id:'disc9',kind:'disc',text:'Quando recebe uma meta, o que mais combina com você?',options:[
-    {label:'Penso em como superar a meta e chegar ao resultado mais rápido.',value:'D'},
-    {label:'Busco envolver pessoas e criar energia em torno do objetivo.',value:'I'},
-    {label:'Organizo uma rotina constante para avançar com segurança.',value:'S'},
-    {label:'Defino critérios, etapas e formas de acompanhar a qualidade.',value:'C'}]},
+    {label:'Quando algo precisa ser resolvido, costumo agir sem esperar muito.',value:'D'},
+    {label:'Gosto de conversar, trocar ideias e me conectar com as pessoas.',value:'I'},
+    {label:'Gosto de manter um clima tranquilo e relações estáveis.',value:'S'},
+    {label:'Gosto de entender bem as coisas antes de chegar a uma conclusão.',value:'C'}]},
+  {id:'disc2',kind:'disc',text:'Em uma situação nova, o que tende a acontecer primeiro?',options:[
+    {label:'Observo o ambiente e procuro entender como tudo funciona.',value:'C'},
+    {label:'Vou me adaptando aos poucos, sem pressa para mudar meu jeito.',value:'S'},
+    {label:'Começo a conversar e conhecer as pessoas ao redor.',value:'I'},
+    {label:'Tomo iniciativa e experimento o que parece fazer sentido.',value:'D'}]},
+  {id:'disc3',kind:'disc',text:'Quando aparece um problema inesperado, qual reação é mais natural?',options:[
+    {label:'Parto para a solução e tento resolver o quanto antes.',value:'D'},
+    {label:'Procuro entender o que aconteceu antes de decidir o que fazer.',value:'C'},
+    {label:'Converso sobre a situação e costumo pensar melhor trocando ideias.',value:'I'},
+    {label:'Mantenho a calma e tento evitar que a situação fique mais tensa.',value:'S'}]},
+  {id:'disc4',kind:'disc',text:'Na convivência com outras pessoas, o que mais combina com você?',options:[
+    {label:'Costumo ser paciente e preservar relações de confiança.',value:'S'},
+    {label:'Sou espontâneo e gosto de deixar a convivência mais leve.',value:'I'},
+    {label:'Valorizo combinados claros e coerência no que foi acertado.',value:'C'},
+    {label:'Costumo falar com franqueza quando quero que algo avance.',value:'D'}]},
+  {id:'disc5',kind:'disc',text:'Quando precisa tomar uma decisão importante, qual frase mais representa você?',options:[
+    {label:'Decido e assumo as consequências da escolha.',value:'D'},
+    {label:'Penso em como a decisão pode afetar as pessoas envolvidas.',value:'S'},
+    {label:'Gosto de conversar e ouvir outras perspectivas antes de fechar.',value:'I'},
+    {label:'Procuro reunir informações suficientes para reduzir dúvidas.',value:'C'}]},
+  {id:'disc6',kind:'disc',text:'Em atividades do dia a dia, o que tende a chamar mais sua atenção?',options:[
+    {label:'A possibilidade de interagir e compartilhar ideias.',value:'I'},
+    {label:'Os detalhes e se as coisas estão sendo feitas do jeito certo.',value:'C'},
+    {label:'A sensação de desafio e de conseguir avançar.',value:'D'},
+    {label:'A continuidade e a sensação de segurança no que estou fazendo.',value:'S'}]},
+  {id:'disc7',kind:'disc',text:'Quando seus planos mudam de repente, qual tendência mais se aproxima de você?',options:[
+    {label:'Mudo o caminho rapidamente e penso no que dá para fazer agora.',value:'D'},
+    {label:'Preciso de um tempo para me acostumar, mas procuro manter a tranquilidade.',value:'S'},
+    {label:'Quero entender o motivo da mudança e o que ela altera.',value:'C'},
+    {label:'Costumo conversar sobre a mudança e buscar o lado positivo da situação.',value:'I'}]},
+  {id:'disc8',kind:'disc',text:'Em uma conversa em grupo, qual comportamento tende a aparecer mais em você?',options:[
+    {label:'Escuto bastante e procuro evitar que alguém fique desconfortável.',value:'S'},
+    {label:'Faço perguntas e gosto de esclarecer pontos que ficaram vagos.',value:'C'},
+    {label:'Participo com facilidade e costumo trazer energia para a conversa.',value:'I'},
+    {label:'Costumo ir direto ao ponto e ajudar a chegar a uma definição.',value:'D'}]},
+  {id:'disc9',kind:'disc',text:'Quando quer muito alguma coisa, o que mais combina com você?',options:[
+    {label:'Vou atrás com determinação e tento acelerar o caminho.',value:'D'},
+    {label:'Compartilho a ideia e gosto de envolver outras pessoas no entusiasmo.',value:'I'},
+    {label:'Sigo de forma constante, mesmo que leve mais tempo.',value:'S'},
+    {label:'Planejo e penso nas etapas para diminuir a chance de erro.',value:'C'}]},
   {id:'disc10',kind:'disc',text:'Quando alguém discorda de você, qual reação tende a ser mais natural?',options:[
-    {label:'Defendo meu ponto com firmeza e foco na decisão.',value:'D'},
-    {label:'Procuro explicar meu ponto de forma aberta e persuasiva.',value:'I'},
-    {label:'Busco preservar a relação e encontrar um caminho de acordo.',value:'S'},
-    {label:'Volto aos fatos, critérios e argumentos para avaliar a questão.',value:'C'}]},
-  {id:'disc11',kind:'disc',text:'Qual ambiente tende a deixar você mais confortável?',options:[
-    {label:'Um ambiente dinâmico, com desafios e autonomia para agir.',value:'D'},
-    {label:'Um ambiente sociável, com troca, reconhecimento e movimento.',value:'I'},
-    {label:'Um ambiente cooperativo, previsível e com relações estáveis.',value:'S'},
-    {label:'Um ambiente organizado, com padrões claros e atenção à qualidade.',value:'C'}]},
-  {id:'disc12',kind:'disc',text:'Ao começar um projeto, qual comportamento mais se parece com você?',options:[
-    {label:'Quero entender requisitos, riscos e critérios antes de começar.',value:'C'},
-    {label:'Penso em quem envolver e como gerar adesão à ideia.',value:'I'},
-    {label:'Organizo um ritmo sustentável e busco continuidade.',value:'S'},
-    {label:'Defino o objetivo e começo a agir para ganhar velocidade.',value:'D'}]},
-  {id:'disc13',kind:'disc',text:'Quando o prazo está apertado, qual tendência mais aparece?',options:[
-    {label:'Acelero decisões e corto o que considero secundário.',value:'D'},
-    {label:'Mantenho contato com as pessoas para sustentar energia e engajamento.',value:'I'},
-    {label:'Procuro manter calma, ritmo e apoio ao grupo.',value:'S'},
-    {label:'Confiro pontos críticos para evitar que a pressa gere erros.',value:'C'}]},
-  {id:'disc14',kind:'disc',text:'Qual tipo de reconhecimento mais costuma ter significado para você?',options:[
-    {label:'Ser reconhecido pela capacidade de gerar resultados e avançar.',value:'D'},
-    {label:'Receber retorno positivo das pessoas e perceber entusiasmo.',value:'I'},
-    {label:'Ser valorizado pela confiança, constância e apoio que ofereço.',value:'S'},
-    {label:'Ser reconhecido pela qualidade, precisão e consistência do trabalho.',value:'C'}]},
-  {id:'disc15',kind:'disc',text:'Quando uma tarefa é repetitiva, qual atitude mais se aproxima da sua?',options:[
-    {label:'Procuro uma forma mais rápida ou desafiadora de chegar ao resultado.',value:'D'},
-    {label:'Torno a atividade mais leve por meio de interação e troca.',value:'I'},
-    {label:'Consigo manter constância e seguir o ritmo necessário.',value:'S'},
-    {label:'Aproveito para manter padrão, organização e precisão.',value:'C'}]},
-  {id:'disc16',kind:'disc',text:'Quando precisa convencer alguém, qual caminho tende a usar primeiro?',options:[
-    {label:'Vou direto ao ponto e mostro o resultado que precisa ser alcançado.',value:'D'},
-    {label:'Crio conexão, entusiasmo e adapto minha comunicação à pessoa.',value:'I'},
-    {label:'Procuro ouvir, compreender resistências e construir confiança.',value:'S'},
-    {label:'Apresento fatos, lógica, critérios e evidências.',value:'C'}]},
-  {id:'disc17',kind:'disc',text:'Quando recebe poucas orientações, qual reação combina mais com você?',options:[
-    {label:'Gosto da liberdade e sigo em frente tomando as decisões necessárias.',value:'D'},
-    {label:'Busco conversar com outras pessoas para trocar ideias e referências.',value:'I'},
-    {label:'Procuro confirmar expectativas para manter segurança no caminho.',value:'S'},
-    {label:'Busco informações e critérios suficientes para executar corretamente.',value:'C'}]},
-  {id:'disc18',kind:'disc',text:'Em conflitos, qual comportamento aparece com mais naturalidade?',options:[
-    {label:'Enfrento o assunto e procuro chegar a uma definição.',value:'D'},
-    {label:'Uso diálogo e influência para diminuir a tensão.',value:'I'},
-    {label:'Procuro conciliar e preservar a relação entre as pessoas.',value:'S'},
-    {label:'Separo fatos de opiniões e tento analisar a situação com objetividade.',value:'C'}]},
-  {id:'disc19',kind:'disc',text:'Qual frase mais representa seu ritmo de trabalho?',options:[
-    {label:'Gosto de velocidade, decisões e sensação de avanço.',value:'D'},
-    {label:'Tenho mais energia quando existe interação e variedade.',value:'I'},
-    {label:'Prefiro um ritmo constante, sustentável e previsível.',value:'S'},
-    {label:'Prefiro um ritmo que permita controle, precisão e qualidade.',value:'C'}]},
-  {id:'disc20',kind:'disc',text:'Ao perceber um erro, qual reação tende a vir primeiro?',options:[
-    {label:'Corrijo rapidamente e sigo para a próxima etapa.',value:'D'},
-    {label:'Converso com os envolvidos e busco resolver de forma leve.',value:'I'},
-    {label:'Procuro ajudar a corrigir sem gerar tensão desnecessária.',value:'S'},
-    {label:'Investigo a causa e penso em como evitar que aconteça novamente.',value:'C'}]},
-  {id:'disc21',kind:'disc',text:'Quando precisa aprender algo novo, qual forma mais combina com você?',options:[
-    {label:'Quero testar logo na prática e aprender enquanto avanço.',value:'D'},
+    {label:'Defendo meu ponto com firmeza.',value:'D'},
+    {label:'Procuro explicar meu ponto de um jeito que a outra pessoa se envolva.',value:'I'},
+    {label:'Tento preservar a relação e encontrar um meio-termo.',value:'S'},
+    {label:'Volto aos fatos e aos argumentos para reconsiderar a questão.',value:'C'}]},
+  {id:'disc11',kind:'disc',text:'Em qual tipo de ambiente você tende a se sentir mais à vontade?',options:[
+    {label:'Onde existe liberdade para agir e desafios para superar.',value:'D'},
+    {label:'Onde há conversa, movimento e contato com pessoas.',value:'I'},
+    {label:'Onde existe previsibilidade, confiança e um ritmo tranquilo.',value:'S'},
+    {label:'Onde as coisas são organizadas e existem referências claras.',value:'C'}]},
+  {id:'disc12',kind:'disc',text:'Quando começa algo novo, qual comportamento mais se parece com você?',options:[
+    {label:'Procuro entender bem antes de começar.',value:'C'},
+    {label:'Fico animado e gosto de compartilhar a novidade com alguém.',value:'I'},
+    {label:'Vou entrando no ritmo aos poucos e prefiro continuidade.',value:'S'},
+    {label:'Começo logo e vou ajustando no caminho.',value:'D'}]},
+  {id:'disc13',kind:'disc',text:'Quando está sob pressão, qual tendência costuma aparecer primeiro?',options:[
+    {label:'Fico mais direto e quero resolver rapidamente.',value:'D'},
+    {label:'Falo mais, busco apoio e tento manter o ânimo.',value:'I'},
+    {label:'Procuro manter a calma e não aumentar a tensão.',value:'S'},
+    {label:'Fico mais atento a erros, detalhes e possíveis consequências.',value:'C'}]},
+  {id:'disc14',kind:'disc',text:'Qual elogio costuma combinar mais com aquilo que você valoriza em si?',options:[
+    {label:'Você é decidido e faz as coisas acontecerem.',value:'D'},
+    {label:'Você é comunicativo e deixa as pessoas à vontade.',value:'I'},
+    {label:'Você é confiável e está presente quando precisam.',value:'S'},
+    {label:'Você é cuidadoso e percebe coisas que outros não percebem.',value:'C'}]},
+  {id:'disc15',kind:'disc',text:'Quando precisa fazer algo repetitivo, qual reação mais se aproxima da sua?',options:[
+    {label:'Tento encontrar um jeito mais rápido ou mais interessante de fazer.',value:'D'},
+    {label:'Procuro deixar a atividade mais agradável com conversa ou variedade.',value:'I'},
+    {label:'Consigo manter o ritmo e seguir sem me incomodar tanto.',value:'S'},
+    {label:'Aproveito para fazer com organização e atenção aos detalhes.',value:'C'}]},
+  {id:'disc16',kind:'disc',text:'Quando quer que alguém considere sua ideia, qual caminho tende a usar primeiro?',options:[
+    {label:'Falo de forma objetiva e mostro por que acho que vale a pena.',value:'D'},
+    {label:'Uso entusiasmo, conversa e conexão para despertar interesse.',value:'I'},
+    {label:'Escuto a pessoa e procuro construir confiança antes de insistir.',value:'S'},
+    {label:'Explico com lógica, exemplos e informações que sustentem a ideia.',value:'C'}]},
+  {id:'disc17',kind:'disc',text:'Quando não sabe exatamente como agir, o que costuma fazer?',options:[
+    {label:'Confio no meu julgamento e tomo uma direção.',value:'D'},
+    {label:'Converso com alguém para trocar ideias.',value:'I'},
+    {label:'Procuro uma referência ou confirmação antes de seguir.',value:'S'},
+    {label:'Busco mais informações para entender melhor a situação.',value:'C'}]},
+  {id:'disc18',kind:'disc',text:'Quando surge um conflito, qual comportamento aparece com mais naturalidade?',options:[
+    {label:'Prefiro enfrentar o assunto e resolver de uma vez.',value:'D'},
+    {label:'Tento conversar de um jeito que reduza a tensão.',value:'I'},
+    {label:'Procuro conciliar e evitar que a relação se desgaste.',value:'S'},
+    {label:'Tento separar emoção de fatos antes de formar uma opinião.',value:'C'}]},
+  {id:'disc19',kind:'disc',text:'Qual destas frases descreve melhor o seu ritmo natural?',options:[
+    {label:'Gosto de movimento e fico impaciente quando as coisas demoram demais.',value:'D'},
+    {label:'Meu ritmo aumenta quando há novidade, interação e estímulo.',value:'I'},
+    {label:'Prefiro um ritmo constante e sem mudanças bruscas.',value:'S'},
+    {label:'Prefiro ter tempo suficiente para fazer as coisas com cuidado.',value:'C'}]},
+  {id:'disc20',kind:'disc',text:'Quando percebe que algo deu errado, o que tende a fazer primeiro?',options:[
+    {label:'Corrijo o que for possível e sigo em frente.',value:'D'},
+    {label:'Converso sobre o que aconteceu e tento aliviar o clima.',value:'I'},
+    {label:'Procuro resolver sem criar mais tensão entre as pessoas.',value:'S'},
+    {label:'Quero entender a causa para evitar que aconteça de novo.',value:'C'}]},
+  {id:'disc21',kind:'disc',text:'Quando aprende algo novo, qual forma costuma combinar mais com você?',options:[
+    {label:'Prefiro testar logo e aprender fazendo.',value:'D'},
     {label:'Aprendo bem conversando, perguntando e trocando experiências.',value:'I'},
-    {label:'Prefiro aprender em etapas, com tempo para incorporar o novo.',value:'S'},
-    {label:'Gosto de entender fundamentos, instruções e detalhes antes de aplicar.',value:'C'}]},
-  {id:'disc22',kind:'disc',text:'Em um grupo sem liderança clara, qual atitude mais provavelmente seria sua?',options:[
-    {label:'Assumiria a direção para organizar decisões e próximos passos.',value:'D'},
-    {label:'Estimularia a participação e aproximaria as pessoas.',value:'I'},
-    {label:'Ajudaria a manter cooperação e continuidade enquanto o grupo se organiza.',value:'S'},
-    {label:'Ajudaria a definir informações, critérios e uma forma organizada de trabalhar.',value:'C'}]},
-  {id:'disc23',kind:'disc',text:'Quando pensa em um trabalho bem feito, o que pesa mais para você?',options:[
-    {label:'Ter alcançado ou superado o resultado esperado.',value:'D'},
-    {label:'Ter conseguido envolver pessoas e gerar uma experiência positiva.',value:'I'},
-    {label:'Ter mantido constância, confiança e boa cooperação.',value:'S'},
-    {label:'Ter entregue com qualidade, precisão e critérios bem atendidos.',value:'C'}]},
-  {id:'disc24',kind:'disc',text:'Qual destas descrições mais se aproxima de como você gostaria de ser percebido?',options:[
-    {label:'Como alguém decidido, objetivo e capaz de fazer acontecer.',value:'D'},
-    {label:'Como alguém comunicativo, inspirador e fácil de se relacionar.',value:'I'},
-    {label:'Como alguém confiável, paciente e disposto a apoiar.',value:'S'},
-    {label:'Como alguém criterioso, organizado e comprometido com a qualidade.',value:'C'}]},
-
+    {label:'Gosto de aprender aos poucos, repetindo até me sentir seguro.',value:'S'},
+    {label:'Prefiro entender os fundamentos e detalhes antes de aplicar.',value:'C'}]},
+  {id:'disc22',kind:'disc',text:'Quando está com outras pessoas e ninguém sabe bem o que fazer, qual atitude é mais provável?',options:[
+    {label:'Dou uma sugestão e tento colocar as coisas em movimento.',value:'D'},
+    {label:'Começo a conversar e incentivo as pessoas a participarem.',value:'I'},
+    {label:'Procuro ajudar para que todos fiquem confortáveis e cooperem.',value:'S'},
+    {label:'Tento organizar as informações e entender o que faz mais sentido.',value:'C'}]},
+  {id:'disc23',kind:'disc',text:'Quando considera que algo ficou realmente bom, o que pesa mais para você?',options:[
+    {label:'Ter conseguido chegar ao que eu queria.',value:'D'},
+    {label:'Ter tornado a experiência agradável e envolvente.',value:'I'},
+    {label:'Ter mantido tranquilidade, constância e boas relações.',value:'S'},
+    {label:'Ter feito com cuidado, coerência e atenção aos detalhes.',value:'C'}]},
+  {id:'disc24',kind:'disc',text:'Qual destas descrições mais combina com a forma como você costuma ser?',options:[
+    {label:'Direto, decidido e independente.',value:'D'},
+    {label:'Comunicativo, espontâneo e entusiasmado.',value:'I'},
+    {label:'Paciente, constante e acolhedor.',value:'S'},
+    {label:'Observador, criterioso e organizado.',value:'C'}]},
   // BLOCO 2 - Comunicacao / estilo social: 10 perguntas.
   {id:'social1',kind:'social',text:'Em grupos novos, costumo iniciar conversas espontaneamente.',options:scale},
   {id:'social2',kind:'social',text:'Depois de muitas interacoes sociais, geralmente preciso de um tempo mais reservado.',options:scale},

@@ -3,7 +3,7 @@ import { useMemo,useState } from 'react';
 import { behavioralQuestions,vocationalQuestions,Q } from '@/lib/questions';
 
 const behavioralBlocks=[
-  {kind:'disc',title:'Perfil Comportamental (DISC)',subtitle:'Em cada bloco, escolha apenas a frase que MAIS combina com você. Não existem respostas certas ou erradas.'},
+  {kind:'disc',title:'Perfil Comportamental (DISC)',subtitle:'Em cada bloco, escolha apenas a frase que MAIS combina com você pensando no seu jeito natural de ser, na vida de forma geral — não apenas no trabalho. Não existem respostas certas ou erradas.'},
   {kind:'social',title:'Estilo de Comunicação',subtitle:'Como você prefere interagir, pensar e recuperar energia social.'},
   {kind:'value',title:'Valores e Motivadores',subtitle:'Quais fatores tendem a dar sentido, interesse e motivação ao que você faz.'},
   {kind:'work',title:'Preferências no Ambiente de Trabalho',subtitle:'Quais condições tendem a facilitar conforto, foco e desempenho.'}

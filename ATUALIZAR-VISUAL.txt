@@ -1,0 +1,32 @@
+ATUALIZACAO VISUAL - PERFIL & VOCACIONAL
+
+O que muda nesta versao:
+- Menu lateral esquerdo no painel administrativo
+- Dashboard com indicadores
+- Navegacao por Perfil Comportamental, Teste Vocacional, Relatorios e Excluidos
+- Nova tela para criar avaliacao
+- Botao Copiar link logo apos gerar o link
+- Botao Copiar link nas avaliacoes ainda em aberto
+- Filtros reorganizados
+- Tabelas e status modernizados
+- Tela de login atualizada
+- Tela do participante atualizada para celular e desktop
+- Nova paleta: verde petroleo, areia, neutros e terracota suave
+- Relatorios impressos alinhados a nova identidade visual
+
+IMPORTANTE:
+- Esta atualizacao nao exige novo SQL no Supabase.
+- Nao altera os resultados ja salvos.
+- Nao altera a regra de uso unico dos links.
+- Teste Comportamental e Teste Vocacional continuam separados.
+
+COMO PUBLICAR:
+1. Extraia o ZIP.
+2. No GitHub Desktop, abra o repositorio perfil-comportamental-sueli.
+3. Clique em Show in Explorer.
+4. Copie todo o conteudo desta pasta para a pasta do repositorio e substitua os arquivos.
+5. Volte ao GitHub Desktop.
+6. Summary: Atualiza visual do app
+7. Commit to main.
+8. Push origin.
+9. Aguarde o deploy automatico do Vercel.

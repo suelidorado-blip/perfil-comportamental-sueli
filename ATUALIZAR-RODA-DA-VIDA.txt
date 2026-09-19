@@ -1,0 +1,19 @@
+ATUALIZAÇÃO - MÓDULO RODA DA VIDA
+
+1. No Supabase, abra SQL Editor.
+2. Execute UMA ÚNICA VEZ o arquivo: supabase/migration-v3-roda-da-vida.sql
+3. Depois copie todos os arquivos deste pacote para a pasta do projeto e substitua os existentes.
+4. GitHub Desktop: Commit to main -> Push origin.
+5. Aguarde o Vercel ficar Ready.
+
+O módulo fica separado em /admin/life-wheel e aparece no menu como Roda da Vida.
+
+Recursos incluídos:
+- cadastro de pessoas;
+- histórico por pessoa;
+- geração de link individual para cada nova Roda da Vida;
+- 12 áreas, com nota atual e importância de 0 a 10;
+- identificação automática de áreas prioritárias;
+- comparação da roda atual com a anterior;
+- relatório para impressão/PDF;
+- plano de ação para todas as áreas prioritárias.

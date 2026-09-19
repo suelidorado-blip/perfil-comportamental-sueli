@@ -25,7 +25,7 @@ export default function AdminClient(){
  return <div className="admin-shell">
   <aside className="sidebar">
    <div className="sidebar-brand"><div className="brand-mark">PV</div><div><b>Perfil & Vocacional</b><small>Gestão de avaliações</small></div></div>
-   <nav className="side-nav">{nav('dashboard','Dashboard','⌂')}{nav('new','Nova avaliação','＋')}{nav('behavioral','Perfil comportamental','◫')}{nav('vocational','Teste vocacional','◇')}{nav('reports','Relatórios','▤')}{nav('deleted','Excluídos','⌫')}</nav>
+   <nav className="side-nav">{nav('dashboard','Dashboard','⌂')}{nav('new','Nova avaliação','＋')}{nav('behavioral','Perfil comportamental','◫')}{nav('vocational','Teste vocacional','◇')}<a className="side-link" href="/admin/life-wheel"><span>◉</span>Roda da Vida</a>{nav('reports','Relatórios','▤')}{nav('deleted','Excluídos','⌫')}</nav>
    <div className="sidebar-note"><span className="dot-live"/>Sistema conectado</div>
   </aside>
   <main className="admin-main">

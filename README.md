@@ -114,3 +114,8 @@ Os relatorios comportamentais agora explicam cada valor com significado, manifes
 - Diferenca de 4+ pontos: predominancia mais clara.
 - Avaliacoes antigas continuam preservadas com o resultado calculado na versao anterior.
 - Esta ferramenta e autoral e baseada nas dimensoes DISC; nao e um teste psicologico validado.
+
+## Módulo Roda da Vida
+Esta versão inclui um módulo independente em `/admin/life-wheel`, com cadastro de pessoas, histórico longitudinal, nova Roda da Vida por link individual, notas de situação atual e importância (0 a 10), comparação com avaliação anterior e relatório A4 com plano de ação para áreas prioritárias.
+
+Antes de publicar esta versão, execute no Supabase SQL Editor o arquivo `supabase/migration-v3-roda-da-vida.sql` uma única vez.

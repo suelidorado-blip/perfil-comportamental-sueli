@@ -1,0 +1,17 @@
+ATUALIZAÇÃO - RODA DA VIDA SIMPLIFICADA
+
+O que mudou:
+- A pessoa dá apenas UMA nota de 0 a 10 para cada área: como está hoje.
+- A pergunta de importância foi removida.
+- Áreas com nota de 0 a 6 entram automaticamente como áreas que merecem atenção.
+- O relatório mostra nota atual, nota anterior e evolução.
+- O plano de ação aparece para todas as áreas de 0 a 6.
+- Foi incluída uma seção de Relatórios recentes no módulo Roda da Vida para facilitar o acesso ao PDF.
+
+Não é necessário alterar o banco de dados.
+
+Para publicar:
+1. Copie os arquivos deste pacote para a pasta do projeto e substitua os existentes.
+2. No GitHub Desktop, faça Commit to main.
+3. Clique em Push origin.
+4. Aguarde o Vercel ficar Ready.

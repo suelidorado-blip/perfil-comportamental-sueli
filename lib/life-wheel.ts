@@ -4,14 +4,16 @@ export const lifeAreas = [
   ['leisure','Lazer e diversão'],['home','Ambiente físico / casa'],['contribution','Contribuição / impacto'],['quality','Qualidade de vida']
 ] as const;
 export type LifeAreaKey = typeof lifeAreas[number][0];
+
 export function scoreLifeWheel(answers:Record<string,any>){
  const areas:any={}; const priorities:any[]=[];
  for(const [key,label] of lifeAreas){
-   const current=Number(answers[`${key}_current`]??0), importance=Number(answers[`${key}_importance`]??0);
-   const gap=importance-current; areas[key]={label,current,importance,gap};
-   if(importance>=7 && (current<=6 || gap>=3)) priorities.push({key,label,current,importance,gap});
+   const current=Number(answers[`${key}_current`]??0);
+   areas[key]={label,current};
+   // Regra inicial: notas de 0 a 6 entram como áreas que merecem atenção.
+   if(current<=6) priorities.push({key,label,current});
  }
- priorities.sort((a,b)=>b.gap-a.gap || a.current-b.current);
+ priorities.sort((a,b)=>a.current-b.current);
  const avg=Math.round((Object.values(areas) as any[]).reduce((s,x)=>s+x.current,0)/lifeAreas.length*10)/10;
- return {version:1,areas,priorities,average:avg};
+ return {version:2,areas,priorities,average:avg,priorityThreshold:6};
 }

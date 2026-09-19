@@ -1,0 +1,20 @@
+ATUALIZACAO - RODA DA VIDA
+
+Alteracoes desta versao:
+- Removida a area "Contribuicao / impacto" da Roda da Vida.
+- Mantida apenas a nota "Como esta hoje?" de 0 a 10.
+- Adicionado botao Excluir nos historicos e relatorios da Roda da Vida.
+- A exclusao pede confirmacao e remove o registro selecionado.
+- Relatorio configurado para A4 retrato, com largura adequada para impressao.
+- Botoes separados para Salvar em PDF e Imprimir.
+- Comparacao com avaliacao anterior continua disponivel quando houver historico.
+- Plano de acao continua sendo gerado para todas as areas com nota de 0 a 6.
+
+Nao e necessaria nova migration no Supabase para esta atualizacao.
+
+Publicacao:
+1. Copie/substitua os arquivos deste pacote na pasta do projeto.
+2. No GitHub Desktop, revise as alteracoes.
+3. Commit sugerido: Ajusta Roda da Vida e relatorio A4
+4. Push origin.
+5. Aguarde o deploy do Vercel ficar Ready.

@@ -1,7 +1,7 @@
 export const lifeAreas = [
   ['health','Saúde e bem-estar'],['family','Família'],['love','Relacionamento amoroso'],['social','Amigos e vida social'],
   ['career','Carreira / profissão'],['finances','Finanças'],['growth','Desenvolvimento pessoal'],['spiritual','Espiritualidade / propósito'],
-  ['leisure','Lazer e diversão'],['home','Ambiente físico / casa'],['contribution','Contribuição / impacto'],['quality','Qualidade de vida']
+  ['leisure','Lazer e diversão'],['home','Ambiente físico / casa'],['quality','Qualidade de vida']
 ] as const;
 export type LifeAreaKey = typeof lifeAreas[number][0];
 
